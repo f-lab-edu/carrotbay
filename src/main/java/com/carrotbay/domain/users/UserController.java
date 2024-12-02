@@ -50,9 +50,9 @@ public class UserController {
 	 * @return
 	 */
 	@PostMapping("/nickname")
-	public ResponseEntity<?> checkNickname(@RequestParam(name = "nickname") @Valid String nickname) {
+	public ResponseEntity<?> checkNickname(@RequestBody @Valid UserDto.NicknameDto nicknameDto, BindingResult bindingResult) {
 		try {
-			boolean result = userService.duplicateCheckNickname(nickname);
+			boolean result = userService.duplicateCheckNickname(nicknameDto);
 			return new ResponseEntity<>(new HttpResponseDto<>(200, "닉네임 중복 검사 성공", result), HttpStatus.CREATED);
 
 		} catch (CustomApiException e) {

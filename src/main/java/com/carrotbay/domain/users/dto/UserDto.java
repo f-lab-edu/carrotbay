@@ -17,14 +17,14 @@ public class UserDto {
     @Getter // 해당 클래스의 모든 필드에 대해 자동으로 getter 메서드를 생성
     @Setter // 해당 클래스의 모든 필드에 대해 자동으로 setter 메서드를 생성.
     public static class RegisterUserDto{
-        @NotEmpty
+        @NotEmpty(message = "이메일을 입력해주세요")
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" , message = "이메일을 입력해주세요.")
         private String username; // 회원 아이디
-        @NotEmpty
+        @NotEmpty(message = "비밀번호를 입력해주세요")
         @Pattern(regexp = "^(?=(.*[a-zA-Z]){1})(?=(.*\\W){1})[a-zA-Z\\W0-9]{8,20}$", message = "8~20자 사이에 영대소문자와 특수문자를 하나 이상 포함해야 합니다.")
         private String password; // 비밀번호
-        @NotEmpty
-        @Pattern(regexp = "^[a-zA-Z가-힣0-9]{1,10}$", message = "한글 및 숫자를 입력해주세요.")
+        @NotEmpty(message = "닉네임을 입력해주세요.")
+        @Pattern(regexp = "^[a-zA-Z가-힣0-9]{1,10}$", message = "1~10자 사이의 한글 및 숫자를 입력해주세요.")
         private String nickname; // 닉네임
         private String introduce; // 자기소개
         private String imageUrl; // 프사 이미지 URL
@@ -58,4 +58,13 @@ public class UserDto {
             this.username = user.getUsername();
         }
     }
+
+    @Getter
+    @Setter
+    public static class NicknameDto{
+        @NotEmpty(message = "닉네임을 입력해주세요.")
+        @Pattern(regexp = "^[a-zA-Z가-힣0-9]{1,10}$", message = "1~10자 사이의 한글 및 숫자를 입력해주세요.")
+        private String nickname; // 닉네임
+    }
+
 }
