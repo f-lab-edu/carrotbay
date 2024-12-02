@@ -57,8 +57,9 @@ public class User {
 	private boolean isDelete;
 
 	@Builder
-	public User(String username, String password, String nickname, String imageUrl, String introduce,
+	public User(Long id, String username, String password, String nickname, String imageUrl, String introduce,
 		UserStatus state) {
+		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.nickname = nickname;

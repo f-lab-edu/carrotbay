@@ -46,6 +46,7 @@ public class UserDto {
      */
     @NoArgsConstructor
     @Getter
+    @Setter
     public static class RegisterUserResponseDto{
         private Long id;
         private String username;

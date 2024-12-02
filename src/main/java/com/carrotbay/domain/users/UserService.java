@@ -23,6 +23,9 @@ public class UserService {
 	 * 회원 등록
 	 */
 	public UserDto.RegisterUserResponseDto registerUser(UserDto.RegisterUserDto registerUserDto) {
+
+		// 닉네임 중복 검사
+		duplicateCheckNickname(registerUserDto.getNickname());
 		// 동일 유저네임 존재 여부 검사
 		Optional<User> userOptional = userRepository.findByUsername(registerUserDto.getUsername());
 		if (userOptional.isPresent()) {
@@ -40,7 +43,11 @@ public class UserService {
 	 * @param nickname
 	 * @return
 	 */
-	public boolean checkNickname(String nickname) {
+	public boolean duplicateCheckNickname(String nickname) {
+		return checkNickname(nickname);
+	}
+
+	public boolean checkNickname(String nickname){
 		Optional<User> userOptional = userRepository.findByNickname(nickname);
 		if (userOptional.isPresent()) {
 			throw new CustomApiException(ErrorCode.NICKNAME_EXIST);

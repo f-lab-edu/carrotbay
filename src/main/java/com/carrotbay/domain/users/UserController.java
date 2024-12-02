@@ -52,7 +52,7 @@ public class UserController {
 	@PostMapping("/nickname")
 	public ResponseEntity<?> checkNickname(@RequestParam(name = "nickname") @Valid String nickname) {
 		try {
-			boolean result = userService.checkNickname(nickname);
+			boolean result = userService.duplicateCheckNickname(nickname);
 			return new ResponseEntity<>(new HttpResponseDto<>(200, "닉네임 중복 검사 성공", result), HttpStatus.CREATED);
 
 		} catch (CustomApiException e) {
