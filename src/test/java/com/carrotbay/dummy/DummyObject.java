@@ -1,11 +1,9 @@
 package com.carrotbay.dummy;
 
-import java.time.LocalDateTime;
-
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import com.carrotbay.domain.users.User;
-import com.carrotbay.domain.users.UserStatus;
+import com.carrotbay.domain.user.User;
+import com.carrotbay.domain.user.UserStatus;
 
 public class DummyObject {
 
@@ -18,7 +16,7 @@ public class DummyObject {
 			.username(nickname + "@naver.com")
 			.password(encPassword)
 			.nickname(nickname)
-			.state(UserStatus.DEFAULT)
+			.status(UserStatus.ACTIVE)
 			.introduce("자기소개입니다.")
 			.imageUrl("http://image.com")
 			.build();
@@ -33,7 +31,7 @@ public class DummyObject {
 			.username(nickname + "@naver.com")
 			.password(encPassword)
 			.nickname(nickname)
-			.state(UserStatus.DEFAULT)
+			.status(UserStatus.ACTIVE)
 			.introduce("자기소개입니다.")
 			.imageUrl("http://image.com")
 			.build();

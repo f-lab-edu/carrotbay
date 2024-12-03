@@ -1,10 +1,9 @@
-package com.carrotbay.domain.users.dto;
+package com.carrotbay.domain.user.dto;
 
-import com.carrotbay.domain.users.User;
-import com.carrotbay.domain.users.UserStatus;
+import com.carrotbay.domain.user.User;
+import com.carrotbay.domain.user.UserStatus;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,7 +38,7 @@ public class UserDto {
                     .nickname(this.nickname)
                     .introduce(this.introduce)
                     .imageUrl(this.imageUrl)
-                    .state(UserStatus.ACTIVE)
+                    .status(UserStatus.ACTIVE)
                     .build();
         }
     }

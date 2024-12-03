@@ -1,6 +1,6 @@
-package com.carrotbay.domain.users;
+package com.carrotbay.domain.user;
 
-import com.carrotbay.domain.users.dto.UserDto;
+import com.carrotbay.domain.user.dto.UserDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -16,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @Transactional // 메서드나 클래스에 적용하여, 데이터베이스 작업이 트랜잭션으로 관리되도록 설정하며, 기본적으로 롤백 처리된다.(테스트에서 주로 사용).
@@ -281,5 +284,55 @@ class UserControllerTest {
 			.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("fail")) // msg 검증
 			.andExpect(MockMvcResultMatchers.jsonPath("$.data.nickname")
 				.value("닉네임을 입력해주세요.")); // password 조건 메시지 검증
+	}
+
+	@Test
+	@DisplayName("로그인 성공케이스.")
+	void 로그인_성공케이스() throws Exception {
+
+		//given
+		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		loginRequestDto.setPassword("test1234T@");
+		loginRequestDto.setUsername("test@naver.com");
+		String requestBody = om.writeValueAsString(loginRequestDto);
+
+		// when, then
+		when( userService.login(any())).thenReturn(1L);
+		mvc
+			.perform(MockMvcRequestBuilders.post("/api/user/login")
+				.content(requestBody)
+				.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
+			.andExpect(request().sessionAttribute("USER_ID", 1L));
+	}
+
+	@Test
+	@DisplayName("이미 로그인을 한 사용자(세션이 존재하는 사용자)의 경우 로그인 요청이 실패한다.")
+	void 로그인_실패케이스() throws Exception {
+
+		//given
+		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		loginRequestDto.setPassword("test1234T@");
+		loginRequestDto.setUsername("test@naver.com");
+		String requestBody = om.writeValueAsString(loginRequestDto);
+
+		// 이미 로그인한 상태를 모킹
+		MockHttpSession httpSession = new MockHttpSession();
+		httpSession.setAttribute("USER_ID", 1L);
+
+		// when, then
+		mvc
+			.perform(MockMvcRequestBuilders.post("/api/user/login")
+				.content(requestBody)
+				.session(httpSession)
+				.contentType(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(MockMvcResultMatchers.status().is4xxClientError())
+			.andExpect(MockMvcResultMatchers.jsonPath("$.code").value(409)) // code 검증
+			.andExpect(MockMvcResultMatchers.jsonPath("$.msg").value("fail")) // msg 검증
+			.andExpect(MockMvcResultMatchers.jsonPath("$.data")
+				.value("이미 로그인한 사용자입니다.")); // password 조건 메시지 검증
+
 	}
 }

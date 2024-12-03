@@ -1,16 +1,15 @@
-package com.carrotbay.domain.users;
+package com.carrotbay.domain.user;
 
 import com.carrotbay.common.exception.CustomApiException;
 import com.carrotbay.common.dto.HttpResponseDto;
 import com.carrotbay.common.exception.ErrorCode;
-import com.carrotbay.domain.users.dto.UserDto;
+import com.carrotbay.domain.user.dto.UserDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -37,15 +36,16 @@ public class UserController {
 		UserDto.RegisterUserDto registerUserDto, BindingResult bindingResult) {
 		try {
 			UserDto.RegisterUserResponseDto userResponseDto = userService.registerUser(registerUserDto);
-			return new ResponseEntity<>(new HttpResponseDto<>(200, "회원가입 성공", userResponseDto), HttpStatus.CREATED);
+			return new ResponseEntity<>(new HttpResponseDto<>(200, "success", userResponseDto), HttpStatus.CREATED);
 
 		} catch (CustomApiException e) {
 			return new ResponseEntity<>(
-				new HttpResponseDto<>(e.getErrorCode().getStatus(), e.getErrorCode().getMessage(), e.getMessage()),
+				new HttpResponseDto<>(e.getErrorCode().getStatus(), "fail", e.getErrorCode().getMessage()),
 				HttpStatus.BAD_REQUEST);
+
 		} catch (Exception e) {
 			return new ResponseEntity<>(
-				new HttpResponseDto<>(e.hashCode(), "서버 오류가 발생했습니다. 개발팀에 문의해주세요..", e.getMessage()),
+				new HttpResponseDto<>(e.hashCode(), "fail", e.getMessage()),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -59,15 +59,16 @@ public class UserController {
 	public ResponseEntity<?> checkNickname(@RequestBody @Valid UserDto.NicknameDto nicknameDto, BindingResult bindingResult) {
 		try {
 			boolean result = userService.duplicateCheckNickname(nicknameDto);
-			return new ResponseEntity<>(new HttpResponseDto<>(200, "닉네임 중복 검사 성공", result), HttpStatus.CREATED);
+			return new ResponseEntity<>(new HttpResponseDto<>(200, "success", result), HttpStatus.CREATED);
 
 		} catch (CustomApiException e) {
 			return new ResponseEntity<>(
-				new HttpResponseDto<>(e.getErrorCode().getStatus(), e.getErrorCode().getMessage(), e.getMessage()),
+				new HttpResponseDto<>(e.getErrorCode().getStatus(), "fail", e.getErrorCode().getMessage()),
 				HttpStatus.BAD_REQUEST);
+
 		} catch (Exception e) {
 			return new ResponseEntity<>(
-				new HttpResponseDto<>(e.hashCode(), "서버 오류가 발생했습니다. 개발팀에 문의해주세요.", e.getMessage()),
+				new HttpResponseDto<>(e.hashCode(), "fail", e.getMessage()),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -84,24 +85,25 @@ public class UserController {
 
 			// 이미 로그인 한 사용자인지 확인
 			HttpSession session = httpServletRequest.getSession(false);
-			if(session != null || httpServletRequest.getAttribute("USER_ID") == null){
+			boolean isLoggedIn = session != null ;
+			if (isLoggedIn) {
 				throw new CustomApiException(ErrorCode.SESSION_ACTIVE);
 			}
 
-			// 회원 존재 여부 확인 및 세션 생성
+		// 회원 존재 여부 확인 및 세션 생성
 			Long userId = userService.login(loginRequestDto);
 			httpSession.setAttribute("USER_ID", userId);
 			httpSession.setMaxInactiveInterval(60 * 30);
-			return new ResponseEntity<>(new HttpResponseDto<>(200, "로그인 성공", null), HttpStatus.CREATED);
+			return new ResponseEntity<>(new HttpResponseDto<>(200, "success", null), HttpStatus.CREATED);
 
 		} catch (CustomApiException e) {
 			return new ResponseEntity<>(
-				new HttpResponseDto<>(e.getErrorCode().getStatus(), e.getErrorCode().getMessage(), e.getMessage()),
+				new HttpResponseDto<>(e.getErrorCode().getStatus(), "fail", e.getErrorCode().getMessage()),
 				HttpStatus.BAD_REQUEST);
 
 		} catch (Exception e) {
 			return new ResponseEntity<>(
-				new HttpResponseDto<>(e.hashCode(), "서버 오류가 발생했습니다. 개발팀에 문의해주세요.", e.getMessage()),
+				new HttpResponseDto<>(e.hashCode(), "fail", e.getMessage()),
 				HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -113,7 +115,18 @@ public class UserController {
 	 */
 	@GetMapping("/logout")
 	public ResponseEntity<?> logout(HttpSession httpSession) {
-		httpSession.removeAttribute("USER");
-		return new ResponseEntity<>(new HttpResponseDto<>(200, "로그아웃 성공", null ), HttpStatus.CREATED);
+		try {
+			httpSession.removeAttribute("USER");
+		} catch (CustomApiException e) {
+			return new ResponseEntity<>(
+				new HttpResponseDto<>(e.getErrorCode().getStatus(), "fail", e.getErrorCode().getMessage()),
+				HttpStatus.BAD_REQUEST);
+
+		} catch (Exception e) {
+			return new ResponseEntity<>(
+				new HttpResponseDto<>(e.hashCode(), "fail", e.getMessage()),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return new ResponseEntity<>(new HttpResponseDto<>(200, "success", "로그아웃 성공" ), HttpStatus.CREATED);
 	}
 }

@@ -1,9 +1,9 @@
-package com.carrotbay.domain.users;
+package com.carrotbay.domain.user;
 
 import com.carrotbay.common.exception.CustomApiException;
 import com.carrotbay.common.exception.ErrorCode;
-import com.carrotbay.domain.users.dto.UserDto;
-import com.carrotbay.domain.users.repository.UserRepository;
+import com.carrotbay.domain.user.dto.UserDto;
+import com.carrotbay.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -53,11 +53,18 @@ public class UserService {
 	 * @return
 	 */
 	public Long login(UserDto.LoginRequestDto loginRequestDto){
-		Optional<User> loginUser = Optional.ofNullable(userRepository.findByUsernameAndPassword(loginRequestDto.getUsername(),
-					passwordEncoder.encode(loginRequestDto.getPassword()))
-				.orElseThrow(() -> new CustomApiException(ErrorCode.USER_NOT_EXIST)));
 
-		return loginUser.get().getId();
+		// 사용자 정보 찾기
+		User loginUser = userRepository.findByUsername(loginRequestDto.getUsername())
+			.orElseThrow(() -> new CustomApiException(ErrorCode.USER_NOT_EXIST));
+
+		// 비밀번호 비교
+		if(passwordEncoder.matches(loginRequestDto.getPassword(), loginUser.getPassword())) {
+			return loginUser.getId();
+		} else {
+			// 비밀번호가 일치하지 않으면 별도의 예외 처리
+			throw new CustomApiException(ErrorCode.INVALID_PASSWORD);
+		}
 	}
 
 	public boolean checkNickname(String nickname){

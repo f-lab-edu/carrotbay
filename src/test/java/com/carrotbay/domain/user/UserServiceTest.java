@@ -1,4 +1,4 @@
-package com.carrotbay.domain.users;
+package com.carrotbay.domain.user;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -16,11 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.carrotbay.common.exception.CustomApiException;
-import com.carrotbay.domain.users.dto.UserDto;
-import com.carrotbay.domain.users.repository.UserRepository;
+import com.carrotbay.domain.user.dto.UserDto;
+import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class) // Mockito를 사용한 단위 테스트에서 Mockito 확장을 활성화하여 Mock 객체 주입 등을 지원함.
 class UserServiceTest extends DummyObject {
@@ -91,4 +89,55 @@ class UserServiceTest extends DummyObject {
 		org.assertj.core.api.Assertions.assertThat(joinResponseDto.getUsername()).isEqualTo("test@naver.com");
 		Assertions.assertThat(joinResponseDto.getNickname()).isEqualTo("test");
 	}
+
+	@Test
+	@DisplayName("로그인 성공케이스")
+	void 로그인_성공케이스(){
+		// given
+		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		loginRequestDto.setUsername("test@naver.com");
+		loginRequestDto.setPassword("test1234T@");
+
+		User loginUser = newMockUser(1L, "test");
+		when(userRepository.findByUsername(any())).thenReturn(Optional.ofNullable(loginUser));
+
+		// when
+		Long userId = userService.login(loginRequestDto);
+
+		//then
+		org.assertj.core.api.Assertions.assertThat(userId).isEqualTo(1L);
+	}
+
+	@Test
+	@DisplayName("회원이 존재하지않으면 로그인은 실패한다.")
+	void 로그인_실패케이스(){
+		// given
+		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		loginRequestDto.setUsername("test@naver.com");
+		loginRequestDto.setPassword("test123@");
+
+		when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
+
+		//when & then
+		CustomApiException exception = assertThrows(CustomApiException.class, ()->userService.login(loginRequestDto));
+		assertEquals("해당 사용자가 존재하지않습니다.", exception.getErrorCode().getMessage());
+	}
+
+	@Test
+	@DisplayName("비밀번호가 일치하지않으면 로그인은 실패한다.")
+	void 로그인_실패케이스2(){
+		// given
+		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		loginRequestDto.setUsername("test@naver.com");
+		loginRequestDto.setPassword("test1234Q@");
+
+		User user = newMockUser(1L, "test");
+		when(userRepository.findByUsername(any())).thenReturn(Optional.ofNullable(user));
+
+		//when & then
+		CustomApiException exception = assertThrows(CustomApiException.class, ()->userService.login(loginRequestDto));
+		assertEquals("비밀번호가 일치하지않습니다", exception.getErrorCode().getMessage());
+	}
+
+
 }

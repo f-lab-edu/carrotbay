@@ -11,10 +11,11 @@ public enum ErrorCode {
 	USER_EXIST(402, "해당 사용자가 이미 존재합니다."),
 	VALIDATION_ERROR(402, "유효성 검사 실패: 필드 값을 확인하세요."),
 	NICKNAME_EXIST(402, "이미 해당 닉네임이 존재합니다."),
+	INVALID_PASSWORD(402,"비밀번호가 일치하지않습니다"),
+	SESSION_ACTIVE(409, "이미 로그인한 사용자입니다."),
 
 	// 500
 	USER_NOT_EXIST(500, "해당 사용자가 존재하지않습니다."),
-	SESSION_ACTIVE(500, "이미 로그인한 사용자입니다."),
 	;
 
 	private final int status;
