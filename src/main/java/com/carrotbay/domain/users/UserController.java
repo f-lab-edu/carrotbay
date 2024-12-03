@@ -2,11 +2,15 @@ package com.carrotbay.domain.users;
 
 import com.carrotbay.common.exception.CustomApiException;
 import com.carrotbay.common.dto.HttpResponseDto;
+import com.carrotbay.common.exception.ErrorCode;
 import com.carrotbay.domain.users.dto.UserDto;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -18,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
 	private final UserService userService;
+
+	private  final HttpSession httpSession;
 
 	/**
 	 * 회원가입
@@ -46,7 +52,7 @@ public class UserController {
 
 	/**
 	 * 닉네임 중복 검사
-	 * @param nickname
+	 * @param nicknameDto
 	 * @return
 	 */
 	@PostMapping("/nickname")
@@ -66,4 +72,48 @@ public class UserController {
 		}
 	}
 
+	/**
+	 * 로그인
+	 * @param loginRequestDto
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping("/login")
+	public ResponseEntity<?> login(@RequestBody @Valid UserDto.LoginRequestDto loginRequestDto, HttpServletRequest httpServletRequest, BindingResult bindingResult){
+		try {
+
+			// 이미 로그인 한 사용자인지 확인
+			HttpSession session = httpServletRequest.getSession(false);
+			if(session != null || httpServletRequest.getAttribute("USER_ID") == null){
+				throw new CustomApiException(ErrorCode.SESSION_ACTIVE);
+			}
+
+			// 회원 존재 여부 확인 및 세션 생성
+			Long userId = userService.login(loginRequestDto);
+			httpSession.setAttribute("USER_ID", userId);
+			httpSession.setMaxInactiveInterval(60 * 30);
+			return new ResponseEntity<>(new HttpResponseDto<>(200, "로그인 성공", null), HttpStatus.CREATED);
+
+		} catch (CustomApiException e) {
+			return new ResponseEntity<>(
+				new HttpResponseDto<>(e.getErrorCode().getStatus(), e.getErrorCode().getMessage(), e.getMessage()),
+				HttpStatus.BAD_REQUEST);
+
+		} catch (Exception e) {
+			return new ResponseEntity<>(
+				new HttpResponseDto<>(e.hashCode(), "서버 오류가 발생했습니다. 개발팀에 문의해주세요.", e.getMessage()),
+				HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	/**
+	 * 로그아웃
+	 * @param httpSession
+	 * @return
+	 */
+	@GetMapping("/logout")
+	public ResponseEntity<?> logout(HttpSession httpSession) {
+		httpSession.removeAttribute("USER");
+		return new ResponseEntity<>(new HttpResponseDto<>(200, "로그아웃 성공", null ), HttpStatus.CREATED);
+	}
 }

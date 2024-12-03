@@ -44,9 +44,7 @@ public class SecurityConfig {
 					.anyRequest().permitAll()
 			)
 			.formLogin((formLogin) ->
-				formLogin
-					.loginPage("/login")
-					.defaultSuccessUrl("/", true)
+				formLogin.disable()
 			)
 			.logout((logoutConfig) ->
 				logoutConfig.logoutSuccessUrl("/")

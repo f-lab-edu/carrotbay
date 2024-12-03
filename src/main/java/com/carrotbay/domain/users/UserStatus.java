@@ -2,7 +2,7 @@ package com.carrotbay.domain.users;
 
 public enum UserStatus {
 
-	DEFAULT("기본"),
+	ACTIVE("활성화"),
 	STOP("정지"),  // 정지 상태의 코드 값과 메시지
 	DORMANCY("휴면"); // 휴면 상태의 코드 값과 메시지
 

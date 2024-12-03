@@ -4,6 +4,7 @@ import com.carrotbay.domain.users.User;
 import com.carrotbay.domain.users.UserStatus;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,9 +21,11 @@ public class UserDto {
         @NotEmpty(message = "이메일을 입력해주세요")
         @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" , message = "이메일을 입력해주세요.")
         private String username; // 회원 아이디
+
         @NotEmpty(message = "비밀번호를 입력해주세요")
         @Pattern(regexp = "^(?=(.*[a-zA-Z]){1})(?=(.*\\W){1})[a-zA-Z\\W0-9]{8,20}$", message = "8~20자 사이에 영대소문자와 특수문자를 하나 이상 포함해야 합니다.")
         private String password; // 비밀번호
+
         @NotEmpty(message = "닉네임을 입력해주세요.")
         @Pattern(regexp = "^[a-zA-Z가-힣0-9]{1,10}$", message = "1~10자 사이의 한글 및 숫자를 입력해주세요.")
         private String nickname; // 닉네임
@@ -36,7 +39,7 @@ public class UserDto {
                     .nickname(this.nickname)
                     .introduce(this.introduce)
                     .imageUrl(this.imageUrl)
-                    .state(UserStatus.DEFAULT)
+                    .state(UserStatus.ACTIVE)
                     .build();
         }
     }
@@ -59,12 +62,30 @@ public class UserDto {
         }
     }
 
+    /**
+     * 닉네임 중복 검사 DTO
+     */
     @Getter
     @Setter
     public static class NicknameDto{
         @NotEmpty(message = "닉네임을 입력해주세요.")
         @Pattern(regexp = "^[a-zA-Z가-힣0-9]{1,10}$", message = "1~10자 사이의 한글 및 숫자를 입력해주세요.")
         private String nickname; // 닉네임
+    }
+
+    /**
+     * 닉네임 중복 검사 DTO
+     */
+    @Getter
+    @Setter
+    public static class LoginRequestDto{
+        @NotEmpty(message = "이메일을 입력해주세요")
+        @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$" , message = "이메일을 입력해주세요.")
+        private String username; // 회원 아이디
+
+        @NotEmpty(message = "비밀번호를 입력해주세요")
+        @Pattern(regexp = "^(?=(.*[a-zA-Z]){1})(?=(.*\\W){1})[a-zA-Z\\W0-9]{8,20}$", message = "8~20자 사이에 영대소문자와 특수문자를 하나 이상 포함해야 합니다.")
+        private String password; // 비밀번호
     }
 
 }

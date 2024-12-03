@@ -47,6 +47,19 @@ public class UserService {
 		return checkNickname(nickname.getNickname());
 	}
 
+	/**
+	 * 로그인 : 해당 사용자가 존재하는 지 확인
+	 * @param loginRequestDto
+	 * @return
+	 */
+	public Long login(UserDto.LoginRequestDto loginRequestDto){
+		Optional<User> loginUser = Optional.ofNullable(userRepository.findByUsernameAndPassword(loginRequestDto.getUsername(),
+					passwordEncoder.encode(loginRequestDto.getPassword()))
+				.orElseThrow(() -> new CustomApiException(ErrorCode.USER_NOT_EXIST)));
+
+		return loginUser.get().getId();
+	}
+
 	public boolean checkNickname(String nickname){
 		Optional<User> userOptional = userRepository.findByNickname(nickname);
 		if (userOptional.isPresent()) {
@@ -54,4 +67,5 @@ public class UserService {
 		}
 		return true;
 	}
+
 }
