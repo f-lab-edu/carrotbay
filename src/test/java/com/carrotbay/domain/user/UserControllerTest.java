@@ -250,7 +250,7 @@ class UserControllerTest {
 		String requestBody = om.writeValueAsString(nicknameDto);
 
 		// when, then
-		when( userService.duplicateCheckNickname(any())).thenReturn(false);
+		when( userService.duplicatedCheckNickname(any())).thenReturn(false);
 		mvc
 			.perform(MockMvcRequestBuilders.post("/api/user/nickname")
 				.content(requestBody)
@@ -273,7 +273,7 @@ class UserControllerTest {
 		String requestBody = om.writeValueAsString(nicknameDto);
 
 		// when, then
-		when( userService.duplicateCheckNickname(any())).thenReturn(false);
+		when( userService.duplicatedCheckNickname(any())).thenReturn(false);
 		mvc
 			.perform(MockMvcRequestBuilders.post("/api/user/nickname")
 				.content(requestBody)
@@ -297,7 +297,7 @@ class UserControllerTest {
 		String requestBody = om.writeValueAsString(loginRequestDto);
 
 		// when, then
-		when( userService.login(any())).thenReturn(1L);
+		when( userService.login(any(),any())).thenReturn(1L);
 		mvc
 			.perform(MockMvcRequestBuilders.post("/api/user/login")
 				.content(requestBody)

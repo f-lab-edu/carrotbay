@@ -27,33 +27,33 @@ public class User {
 	//  데이터베이스의 자동 증가(AUTO_INCREMENT) 기능을 이용해 기본 키 값을 자동으로 생성하도록 설정하는 어노테이션
 	private Long id;
 
-	@Column(nullable = false, length = 50) // 해당 필드를 매핑할 데이터베이스 열(column)의 제약 조건을 설정하는 어노테이션
+	@Column(name = "username", nullable = false, length = 50) // 해당 필드를 매핑할 데이터베이스 열(column)의 제약 조건을 설정하는 어노테이션
 	private String username;
 
-	@Column(nullable = false, length = 500)
+	@Column(name = "password", nullable = false, length = 500)
 	private String password;
 
-	@Column(nullable = false, length = 10)
+	@Column(name = "nickname", nullable = false, length = 10)
 	private String nickname;
 
-	@Column(name = "image_url")
+	@Column(name = "image_url", nullable = true)
 	private String imageUrl;
 
-	@Column
+	@Column(name = "introduce", nullable = true, length = 500)
 	private String introduce;
 
 	@Enumerated(EnumType.STRING)
 	private UserStatus status;
 
 	@LastModifiedDate //  // Entity가 생성되어 저장될 때 시간이 자동 저장
-	@Column(nullable = false, name = "modified_at")
+	@Column(name = "modified_at", nullable = false)
 	private LocalDateTime modifiedAt;
 
 	@CreatedDate //  // Entity가 생성되어 저장될 때 시간이 자동 저장
-	@Column(nullable = false, name = "created_at")
+	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
-	@Column(nullable = false, name = "is_delete")
+	@Column(name = "is_delete", nullable = false)
 	private boolean isDelete;
 
 	@Builder

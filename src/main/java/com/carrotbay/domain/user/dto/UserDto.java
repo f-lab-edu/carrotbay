@@ -1,5 +1,7 @@
 package com.carrotbay.domain.user.dto;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserStatus;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,13 +9,9 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class UserDto {
 
-    /**
-     * 회원 등록시 RequestDto
-     */
     @Getter // 해당 클래스의 모든 필드에 대해 자동으로 getter 메서드를 생성
     @Setter // 해당 클래스의 모든 필드에 대해 자동으로 setter 메서드를 생성.
     public static class RegisterUserDto{
@@ -31,10 +29,11 @@ public class UserDto {
         private String introduce; // 자기소개
         private String imageUrl; // 프사 이미지 URL
 
-        public User toEntity(BCryptPasswordEncoder passwordEncoder){
+        public User toEntity(){
+            String hashed = BCrypt.hashpw(password, BCrypt.gensalt());
             return User.builder()
                     .username(this.username)
-                    .password(passwordEncoder.encode(this.password))
+                    .password(hashed)
                     .nickname(this.nickname)
                     .introduce(this.introduce)
                     .imageUrl(this.imageUrl)
@@ -43,9 +42,6 @@ public class UserDto {
         }
     }
 
-    /**
-     * 회원 등록 시 Response Dto
-     */
     @NoArgsConstructor
     @Getter
     @Setter
@@ -61,9 +57,6 @@ public class UserDto {
         }
     }
 
-    /**
-     * 닉네임 중복 검사 DTO
-     */
     @Getter
     @Setter
     public static class NicknameDto{
@@ -72,9 +65,6 @@ public class UserDto {
         private String nickname; // 닉네임
     }
 
-    /**
-     * 닉네임 중복 검사 DTO
-     */
     @Getter
     @Setter
     public static class LoginRequestDto{

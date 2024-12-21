@@ -1,7 +1,5 @@
 package com.carrotbay.common.handler;
 
-import com.carrotbay.common.dto.HttpResponseDto;
-import com.carrotbay.common.exception.CustomApiException;
 import com.carrotbay.common.exception.CustomValidationException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,19 +13,19 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
-	@ExceptionHandler(CustomApiException.class)
-	public ResponseEntity<?> apiException(CustomApiException e) {
+	@ExceptionHandler(RuntimeException.class)
+	public ResponseEntity<?> apiException(RuntimeException e) {
 		log.error(e.getMessage());
-		return new ResponseEntity<>(
-			new HttpResponseDto<>(e.getErrorCode().getStatus(), "fail", e.getErrorCode().getMessage()),
-			HttpStatus.BAD_REQUEST);
+		return ResponseEntity
+			.status(HttpStatus.BAD_REQUEST)
+			.body(e.getMessage());
 	}
 
 	@ExceptionHandler(CustomValidationException.class)
 	public ResponseEntity<?> validationException(CustomValidationException e) {
 		log.error(e.getMessage());
-		return new ResponseEntity<>(new HttpResponseDto<>(e.getErrorCode().getStatus(), "fail", e.getErrorMap()),
-			HttpStatus.BAD_REQUEST);
+		return ResponseEntity
+			.status(HttpStatus.BAD_REQUEST)
+			.body(e.getErrorMap());
 	}
-
 }

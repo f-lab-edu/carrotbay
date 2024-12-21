@@ -11,11 +11,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.mock.web.MockHttpSession;
 
-import com.carrotbay.common.exception.CustomApiException;
 import com.carrotbay.domain.user.dto.UserDto;
 import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
@@ -27,9 +25,6 @@ class UserServiceTest extends DummyObject {
 
 	@Mock // Mock 객체를 생성하여 테스트에 사용할 가짜 객체를 제공
 	private UserRepository userRepository;
-
-	@Spy //실제 객체를 생성하지만, 필요에 따라 특정 메서드만 Stub(가짜 동작)으로 설정하여 일부 동작을 Mocking할 수 있도록 지원
-	private BCryptPasswordEncoder passwordEncoder;
 
 	@Test // 데스트 메서드임을 표시하여 JUnit이 이를 실행 대상으로 간주하도록 설정.
 	@DisplayName("회원가입 DTO가 null이면 회원가입에 실패한다.") // 테스트에 이름을 지정하여 가독성을 높이고 테스트 실행결과에 커스텀 설명을 제공.
@@ -50,8 +45,8 @@ class UserServiceTest extends DummyObject {
 		when(userRepository.findByNickname(any())).thenReturn(Optional.ofNullable(user));
 
 		//when & then
-		CustomApiException exception = assertThrows(CustomApiException.class, ()->userService.registerUser(registerUserDto));
-		assertEquals("이미 해당 닉네임이 존재합니다.", exception.getErrorCode().getMessage());
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, ()->userService.registerUser(registerUserDto));
+		assertEquals("이미 해당 닉네임이 존재합니다.", exception.getMessage());
 	}
 
 	@Test
@@ -65,8 +60,8 @@ class UserServiceTest extends DummyObject {
 		when(userRepository.findByUsername(any())).thenReturn(Optional.ofNullable(user));
 
 		//when & then
-		CustomApiException exception = assertThrows(CustomApiException.class, ()->userService.registerUser(registerUserDto));
-		assertEquals("해당 사용자가 이미 존재합니다.", exception.getErrorCode().getMessage());
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, ()->userService.registerUser(registerUserDto));
+		assertEquals("해당 사용자가 이미 존재합니다.", exception.getMessage());
 	}
 
 	@Test
@@ -101,8 +96,9 @@ class UserServiceTest extends DummyObject {
 		User loginUser = newMockUser(1L, "test");
 		when(userRepository.findByUsername(any())).thenReturn(Optional.ofNullable(loginUser));
 
+		MockHttpSession session = new MockHttpSession();
 		// when
-		Long userId = userService.login(loginRequestDto);
+		Long userId = userService.login(session,loginRequestDto);
 
 		//then
 		org.assertj.core.api.Assertions.assertThat(userId).isEqualTo(1L);
@@ -118,9 +114,10 @@ class UserServiceTest extends DummyObject {
 
 		when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
 
+		MockHttpSession session = new MockHttpSession();
 		//when & then
-		CustomApiException exception = assertThrows(CustomApiException.class, ()->userService.login(loginRequestDto));
-		assertEquals("해당 사용자가 존재하지않습니다.", exception.getErrorCode().getMessage());
+		NullPointerException exception = assertThrows(NullPointerException.class, ()->userService.login(session,loginRequestDto));
+		assertEquals("해당 사용자가 존재하지않습니다.", exception.getMessage());
 	}
 
 	@Test
@@ -134,10 +131,9 @@ class UserServiceTest extends DummyObject {
 		User user = newMockUser(1L, "test");
 		when(userRepository.findByUsername(any())).thenReturn(Optional.ofNullable(user));
 
+		MockHttpSession session = new MockHttpSession();
 		//when & then
-		CustomApiException exception = assertThrows(CustomApiException.class, ()->userService.login(loginRequestDto));
-		assertEquals("비밀번호가 일치하지않습니다", exception.getErrorCode().getMessage());
+		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, ()->userService.login(session,loginRequestDto));
+		assertEquals("비밀번호가 일치하지않습니다", exception.getMessage());
 	}
-
-
 }
