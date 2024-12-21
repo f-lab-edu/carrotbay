@@ -38,4 +38,6 @@ application.properties
 applicatoin.*
 
 /build/**
+build
+/build
 /out/**
