@@ -43,9 +43,9 @@ build/
 /build
 /out/**
 
-./.github/
-./.github/**
-./.github/*
 .gradle/
 .gradle/**
 .gradle/*
+gradle/
+gradle/**
+gradle/*
