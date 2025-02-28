@@ -49,3 +49,5 @@ build/
 gradle/
 gradle/**
 gradle/*
+*/gradle/
+*/.gralde/

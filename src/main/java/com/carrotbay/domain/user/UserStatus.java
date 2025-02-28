@@ -8,11 +8,12 @@ public enum UserStatus {
 	STOP("정지"),
 	DORMANCY("휴면");
 
-	private String status;
+	private final String status;
 
 	UserStatus(String status) {
 		this.status = status;
 	}
+
 	@JsonValue
 	public String getStatus() {
 		return this.status;

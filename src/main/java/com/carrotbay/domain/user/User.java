@@ -1,19 +1,23 @@
 package com.carrotbay.domain.user;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import jakarta.persistence.*;
-
-import org.springframework.data.annotation.CreatedDate;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @NoArgsConstructor //파라미터가 없는 디폴트 생성자를 생성
 @EntityListeners(AuditingEntityListener.class) // Spring Data JPA에서 제공하는 이벤트 리스너로 엔티티의 영속, 수정 이벤트를 감지하는 역할
@@ -43,6 +47,7 @@ public class User {
 	private String introduce;
 
 	@Enumerated(EnumType.STRING)
+	@Column(name = "status", nullable = true, length = 10)
 	private UserStatus status;
 
 	@LastModifiedDate //  // Entity가 생성되어 저장될 때 시간이 자동 저장

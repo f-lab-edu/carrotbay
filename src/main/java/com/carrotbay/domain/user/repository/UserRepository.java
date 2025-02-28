@@ -1,12 +1,13 @@
 package com.carrotbay.domain.user.repository;
 
-import com.carrotbay.domain.user.User;
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<User,Long>{
+import org.springframework.data.jpa.repository.JpaRepository;
 
-    Optional<User> findByUsername(String username);
-    Optional<User> findByNickname(String nickname);
+import com.carrotbay.domain.user.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+	Optional<User> findByUsername(String username);
+
+	Optional<User> findByNickname(String nickname);
 }
