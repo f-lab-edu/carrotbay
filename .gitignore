@@ -46,3 +46,6 @@ build/
 ./.github/
 ./.github/**
 ./.github/*
+.gradle/
+.gradle/**
+.gradle/*
