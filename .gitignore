@@ -42,6 +42,7 @@ build
 build/
 /build
 /out/**
+
 ./.github/
 ./.github/**
 ./.github/*
