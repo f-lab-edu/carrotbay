@@ -32,7 +32,7 @@ public class UserController {
 		return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
 	}
 
-	@PostMapping("/nickname/check")
+	@PutMapping("/nickname/check")
 	public ResponseEntity<?> checkNickname(@RequestBody @Valid UserDto.NicknameDto nicknameDto, BindingResult bindingResult) {
 		boolean result = userService.duplicatedCheckNickname(nicknameDto);
 		return new ResponseEntity<>(result, HttpStatus.OK);
