@@ -26,7 +26,7 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/
+build/*
 
 ### VS Code ###
 .vscode/
@@ -36,3 +36,18 @@ build/
 bin/
 application.properties
 applicatoin.*
+
+/build/**
+build
+build/
+/build
+/out/**
+
+.gradle/
+.gradle/**
+.gradle/*
+gradle/
+gradle/**
+gradle/*
+*/gradle/
+*/.gralde/
