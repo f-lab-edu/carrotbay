@@ -48,7 +48,7 @@ public class Auction {
 	@Column(name = "end_date", nullable = false)
 	private LocalDateTime endDate;
 
-	@Column(name = "actual_end_date", nullable = false)
+	@Column(name = "actual_end_date", nullable = true)
 	private LocalDateTime actualEndDate;
 
 	@Column(name = "minimum_price", nullable = false)
@@ -61,7 +61,7 @@ public class Auction {
 	private boolean isDelete;
 
 	@LastModifiedDate
-	@Column(name = "modified_at", nullable = false)
+	@Column(name = "modified_at", nullable = true)
 	private LocalDateTime modifiedAt;
 
 	@CreatedDate
@@ -69,11 +69,11 @@ public class Auction {
 	private LocalDateTime createdAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "created_by")
+	@JoinColumn(name = "created_by", nullable = false)
 	private User createdBy;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "updated_by", nullable = false)
+	@JoinColumn(name = "updated_by", nullable = true)
 	private User updateBy;
 
 	@ManyToOne(fetch = FetchType.LAZY) // 여러 개의 엔티티가 하나의 엔티티를 참조하는 관계를 나타낸다.

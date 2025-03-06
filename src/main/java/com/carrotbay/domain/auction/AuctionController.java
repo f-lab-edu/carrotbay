@@ -33,7 +33,7 @@ public class AuctionController {
 	@PostMapping("")
 	public ResponseEntity<?> postAuction(@RequestBody @Valid AuctionDto.UpsertAuctionDto dto,
 		BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-		HttpSession httpSession = httpServletRequest.getSession(true);
+		HttpSession httpSession = httpServletRequest.getSession(false);
 		Long id = auctionService.postAuction(httpSession, dto);
 		return new ResponseEntity<>(id, HttpStatus.CREATED);
 	}
@@ -42,16 +42,15 @@ public class AuctionController {
 	public ResponseEntity<?> putAuction(@PathVariable(name = "auction_id") Long auctionId,
 		@RequestBody @Valid AuctionDto.UpsertAuctionDto dto,
 		BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-		HttpSession httpSession = httpServletRequest.getSession(true);
+		HttpSession httpSession = httpServletRequest.getSession(false);
 		AuctionDto.AuctionResponseDto responseDto = auctionService.modifyAuction(httpSession, auctionId, dto);
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{auction_id}")
 	public ResponseEntity<?> deleteAuction(@PathVariable(name = "auction_id") Long auctionId,
-		@RequestBody @Valid AuctionDto.UpsertAuctionDto dto,
-		BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-		HttpSession httpSession = httpServletRequest.getSession(true);
+		HttpServletRequest httpServletRequest) {
+		HttpSession httpSession = httpServletRequest.getSession(false);
 		boolean result = auctionService.deleteAuction(httpSession, auctionId);
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}

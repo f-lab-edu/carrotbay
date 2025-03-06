@@ -34,20 +34,21 @@ public class AuctionCustomRepositoryImpl implements AuctionCustomRepository {
 					auction.endDate,
 					auction.minimumPrice,
 					auction.instantPrice,
-					auction.successfulBidder.id,
-					auction.successfulBidder.nickname
+					auction.createdBy.id,
+					auction.createdBy.nickname
 				)
 			).from(auction)
 			.where(builder)
 			.orderBy(auction.id.desc())
-			.offset((long)dto.getPageNumber() * dto.getPageSize())
+			.offset(((long)dto.getPageNumber() - 1) * dto.getPageSize())
 			.limit(dto.getPageSize())
 			.fetch();
 	}
 
 	public BooleanBuilder getFilter(AuctionDto.AuctionRequestDto dto) {
 		BooleanBuilder builder = new BooleanBuilder();
-		if (StringUtils.isBlank(dto.getTitle())) {
+		builder.and(auction.isDelete.eq(false));
+		if (!StringUtils.isBlank(dto.getTitle())) {
 			builder.and(auction.title.like("%" + dto.getTitle() + "%"));
 		}
 		if (dto.getStartDate() != null) {
