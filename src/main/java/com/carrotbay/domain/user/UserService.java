@@ -15,6 +15,8 @@ import lombok.RequiredArgsConstructor;
 //Spring 의 서비스 레이어를 정의하는 어노테이션. 일반적으로 비즈니스 로직을 처리하는 클래스에 붙이며 Spring 의 빈으로 등록되어 의존성을 주입받거나 서비스 메서드를 외부에서 호출 할 수있게 됨.
 @Service
 public class UserService {
+	private static String SESSION_KEY = "USER_ID";
+
 	private final UserRepository userRepository;
 
 	public UserDto.RegisterUserResponseDto registerUser(UserDto.RegisterUserDto registerUserDto) {
@@ -51,5 +53,14 @@ public class UserService {
 			throw new IllegalArgumentException("이미 해당 닉네임이 존재합니다.");
 		}
 		return true;
+	}
+
+	public User getUserById(HttpSession session) {
+		if (session == null) {
+			throw new NullPointerException("session이 null입니다.");
+		}
+		Long sessionId = (Long)session.getAttribute(SESSION_KEY);
+		return userRepository.findById(sessionId)
+			.orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지않습니다."));
 	}
 }

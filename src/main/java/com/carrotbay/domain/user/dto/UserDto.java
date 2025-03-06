@@ -13,7 +13,6 @@ import lombok.Setter;
 
 public class UserDto {
 
-	@SuppressWarnings("checkstyle:RegexpSinglelineJava")
 	@Getter // 해당 클래스의 모든 필드에 대해 자동으로 getter 메서드를 생성
 	@Setter // 해당 클래스의 모든 필드에 대해 자동으로 setter 메서드를 생성.
 	public static class RegisterUserDto {

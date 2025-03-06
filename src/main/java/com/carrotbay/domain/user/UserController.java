@@ -22,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
-	private final HttpSession httpSession;
 	private static String SESSION_KEY = "USER_ID";
 	private static int SESSEION_TIME = 60 * 30;
 
@@ -45,7 +44,8 @@ public class UserController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody @Valid UserDto.LoginRequestDto loginRequestDto,
 		BindingResult bindingResult, HttpServletRequest httpServletRequest) {
-		Long userId = userService.login(httpServletRequest.getSession(false), loginRequestDto);
+		HttpSession httpSession = httpServletRequest.getSession(true);
+		Long userId = userService.login(httpSession, loginRequestDto);
 		httpSession.setAttribute(SESSION_KEY, userId);
 		httpSession.setMaxInactiveInterval(SESSEION_TIME);
 		return new ResponseEntity<>(userId, HttpStatus.OK);

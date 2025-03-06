@@ -75,9 +75,7 @@ class UserControllerTest {
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
 
-		// 이미 존재하는 사용자 (Mocking userRepository)
 		when(userService.registerUser(any())).thenThrow(new IllegalArgumentException("해당 사용자가 이미 존재합니다."));
-
 		String requestBody = om.writeValueAsString(registerUserDto);
 
 		// when, then
