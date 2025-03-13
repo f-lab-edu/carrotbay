@@ -21,9 +21,9 @@ public enum AuctionStatus {
 
 	@JsonCreator
 	public static AuctionStatus fromString(String status) {
-		for (AuctionStatus userStatus : AuctionStatus.values()) {
-			if (userStatus.getStatus().equals(status)) {
-				return userStatus;
+		for (AuctionStatus auctionStatus : AuctionStatus.values()) {
+			if (auctionStatus.getStatus().equals(status)) {
+				return auctionStatus;
 			}
 		}
 		throw new IllegalArgumentException("AuctionStatus 변환 : " + status);

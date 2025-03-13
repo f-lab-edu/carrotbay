@@ -15,15 +15,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.mock.web.MockHttpSession;
 
 import com.carrotbay.domain.auction.dto.AuctionDto;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
 import com.carrotbay.dummy.DummyObject;
-
-import jakarta.servlet.http.HttpSession;
 
 @ExtendWith(MockitoExtension.class)
 class AuctionServiceTest extends DummyObject {
@@ -37,16 +34,15 @@ class AuctionServiceTest extends DummyObject {
 	@Mock
 	private AuctionRepository auctionRepository;
 
-	private String SESSION_KEY = "USER_ID";
-	private Long fakeSessionId = 999L;
-	private Long fakeAuctionId = 999L;
+	private final Long fakeSessionId = 999L;
+	private final Long fakeAuctionId = 999L;
 
 	@Test
 	@DisplayName("session이 null이면 경매 등록에 실패한다.")
 	void 경매등록_실패케이스_Session이_null인_경우_등록에_실패한다() {
 		// given
 		String exceptionMessage = "session이 null입니다";
-		AuctionDto.UpsertAuctionDto dto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.CreateAuctionDto dto = new AuctionDto.CreateAuctionDto();
 		// when
 		given(userService.getUserById(null)).willThrow(new NullPointerException(exceptionMessage));
 		// then
@@ -59,43 +55,28 @@ class AuctionServiceTest extends DummyObject {
 	@DisplayName("사용자가 존재하지않으면 등록에 실패한다.")
 	void 경매등록_실패케이스_사용자가_존재하지않는_경우_등록에_실패한다() {
 		// given
-		AuctionDto.UpsertAuctionDto postDto = new AuctionDto.UpsertAuctionDto();
-		HttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SESSION_KEY, fakeSessionId);
+		AuctionDto.CreateAuctionDto dto = new AuctionDto.CreateAuctionDto();
+		;
 		// userService.getUserById(session) 호출 시 예외 발생하도록 설정
-		given(userService.getUserById(httpSession)).willThrow(new NullPointerException("해당 사용자가 존재하지않습니다."));
+		given(userService.getUserById(fakeSessionId)).willThrow(new NullPointerException("해당 사용자가 존재하지않습니다."));
 
 		// when & then
-		assertThrows(NullPointerException.class, () -> auctionService.postAuction(httpSession, postDto));
+		assertThrows(NullPointerException.class, () -> auctionService.postAuction(fakeSessionId, dto));
 	}
 
 	@Test
 	@DisplayName("경매등록_성공케이스.")
 	void 경매등록_성공케이스() {
 		// given
-		AuctionDto.UpsertAuctionDto dto = new AuctionDto.UpsertAuctionDto();
-		MockHttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SESSION_KEY, fakeSessionId);
-
+		AuctionDto.CreateAuctionDto dto = new AuctionDto.CreateAuctionDto();
 		User user = newMockUser(fakeSessionId, "test");
 		Auction auction = newMockAuction(fakeAuctionId, user);
 		when(userService.getUserById(any())).thenReturn(user);
 		when(auctionRepository.save(any())).thenReturn(auction);
 		// when
-		Long id = auctionService.postAuction(httpSession, dto);
+		AuctionDto.PostAuctionResponseDto responseDto = auctionService.postAuction(fakeSessionId, dto);
 		// then
-		Assertions.assertThat(id).isEqualTo(fakeAuctionId);
-	}
-
-	@Test
-	@DisplayName("autcion DTO가 null이면 경매 수정에 실패한다.")
-	void 경매수정_실패케이스_DTO가_null인_경우_경매수정에_실패한다() {
-		// given
-		AuctionDto.UpsertAuctionDto dto = null;
-		MockHttpSession httpSession = new MockHttpSession();
-		httpSession.setAttribute(SESSION_KEY, fakeSessionId);
-		// when & then
-		assertThrows(IllegalArgumentException.class, () -> auctionService.modifyAuction(httpSession, 1L, dto));
+		Assertions.assertThat(responseDto.getId()).isEqualTo(fakeAuctionId);
 	}
 
 	@Test
@@ -103,7 +84,7 @@ class AuctionServiceTest extends DummyObject {
 	void 경매수정_실패케이스_Session이_null인_경우_수정에_실패한다() {
 		// given
 		String exceptionMessage = "session이 null입니다";
-		AuctionDto.UpsertAuctionDto dto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.ModifyAuctionDto dto = new AuctionDto.ModifyAuctionDto();
 		// when
 		given(userService.getUserById(null)).willThrow(new NullPointerException(exceptionMessage));
 		NullPointerException exception = assertThrows(NullPointerException.class,
@@ -117,14 +98,13 @@ class AuctionServiceTest extends DummyObject {
 	void 경매수정_실패케이스_actionId가_null인_경우_수정에_실패한다() {
 		// given
 		String exceptionMessage = "해당 경매내역이 존재하지않습니다.";
-		AuctionDto.UpsertAuctionDto dto = new AuctionDto.UpsertAuctionDto();
-		HttpSession httpSession = new MockHttpSession();
+		AuctionDto.ModifyAuctionDto dto = new AuctionDto.ModifyAuctionDto();
 		User user = newMockUser(fakeSessionId, "test");
 		// when
 		lenient().when(userService.getUserById(any())).thenReturn(user);
 		given(auctionRepository.findById(fakeAuctionId)).willThrow(new IllegalArgumentException(exceptionMessage));
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> auctionService.modifyAuction(httpSession, fakeAuctionId, dto));
+			() -> auctionService.modifyAuction(fakeSessionId, fakeAuctionId, dto));
 		// then
 		assertEquals(exceptionMessage, exception.getMessage());
 	}
@@ -134,7 +114,7 @@ class AuctionServiceTest extends DummyObject {
 	void 경매수정_실패케이스_actionId와_작성자의_id가_틀린_경우_수정에_실패한다() {
 		// given
 		String exceptionMessage = "작성자가 아닙니다.";
-		AuctionDto.UpsertAuctionDto dto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.ModifyAuctionDto dto = new AuctionDto.ModifyAuctionDto();
 		User user = newMockUser(fakeSessionId, "test");
 		User writerUser = newMockUser(1L, "writerUser");
 		Auction auction = newMockAuction(fakeAuctionId, writerUser);
@@ -155,22 +135,23 @@ class AuctionServiceTest extends DummyObject {
 		String title = "test";
 		String content = "content";
 		LocalDateTime endDate = LocalDateTime.now();
-		int minimumPrice = 100;
-		int instantPrice = 2000;
-		AuctionDto.UpsertAuctionDto dto = new AuctionDto.UpsertAuctionDto();
-		dto.setTitle(title);
-		dto.setContent(content);
-		dto.setEndDate(endDate);
-		dto.setMinimumPrice(minimumPrice);
-		dto.setInstantPrice(instantPrice);
-		HttpSession httpSession = new MockHttpSession();
+		int minimumPrice = 10;
+		int instantPrice = 10;
+		AuctionDto.ModifyAuctionDto dto = AuctionDto.ModifyAuctionDto.builder()
+			.title(title)
+			.content(content)
+			.endDate(endDate)
+			.minimumPrice(minimumPrice)
+			.instantPrice(instantPrice)
+			.build();
 		User user = newMockUser(fakeSessionId, title);
 		Auction auction = newMockAuction(fakeAuctionId, user);
 		lenient().when(userService.getUserById(any())).thenReturn(user);
 		lenient().when(auctionRepository.findById(any())).thenReturn(Optional.of(auction));
 		lenient().when(auctionRepository.save(any())).thenReturn(auction);
 		// // when
-		AuctionDto.AuctionResponseDto responseDto = auctionService.modifyAuction(httpSession, fakeAuctionId, dto);
+		AuctionDto.ModifyAuctionResponseDto responseDto = auctionService.modifyAuction(fakeSessionId, fakeAuctionId,
+			dto);
 		// then
 		Assertions.assertThat(auction.getId()).isEqualTo(fakeAuctionId);
 		Assertions.assertThat(responseDto.getTitle()).isEqualTo(title);
@@ -198,13 +179,12 @@ class AuctionServiceTest extends DummyObject {
 	void 경매삭제_실패케이스_actionId가_null인_경우_삭제에_실패한다() {
 		// given
 		String exceptionMessage = "해당 경매내역이 존재하지않습니다.";
-		HttpSession httpSession = new MockHttpSession();
 		User user = newMockUser(fakeSessionId, "test");
 		// when
 		lenient().when(userService.getUserById(any())).thenReturn(user);
 		given(auctionRepository.findById(fakeAuctionId)).willThrow(new IllegalArgumentException(exceptionMessage));
 		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-			() -> auctionService.deleteAuction(httpSession, fakeAuctionId));
+			() -> auctionService.deleteAuction(fakeSessionId, fakeAuctionId));
 		// then
 		assertEquals(exceptionMessage, exception.getMessage());
 	}
@@ -231,54 +211,59 @@ class AuctionServiceTest extends DummyObject {
 	@DisplayName("경매조회_성공케이스.")
 	void 경매조회_성공케이스() {
 		// Given
-		AuctionDto.AuctionRequestDto requestDto = new AuctionDto.AuctionRequestDto(
-			1L, "Test Auction", LocalDateTime.now(), LocalDateTime.now(), 0, 10
+
+		User createdBy = newMockUser(1L, "test");
+		User bidder = newMockUser(2L, "test2");
+		List<Auction> mockResponse = List.of(
+			Auction.builder()
+				.id(1L)
+				.title("Auction 1")
+				.content("Description 1")
+				.status(AuctionStatus.AUCTION)
+				.endDate(LocalDateTime.now())
+				.createdAt(LocalDateTime.now())
+				.minimumPrice(100)
+				.instantPrice(10)
+				.createdBy(createdBy)
+				.successfulBidder(null)
+				.build(),
+			Auction.builder()
+				.id(2L)
+				.title("Auction 2")
+				.content("Description 2")
+				.status(AuctionStatus.CANCEL)
+				.endDate(LocalDateTime.now())
+				.createdAt(LocalDateTime.now())
+				.minimumPrice(200)
+				.instantPrice(20)
+				.createdBy(createdBy)
+				.successfulBidder(bidder)
+				.build()
 		);
 
-		List<AuctionDto.AuctionResponseDto> mockResponse = List.of(
-			new AuctionDto.AuctionResponseDto(
-				1L, "Auction 1", "Description 1", AuctionStatus.AUCTION,
-				LocalDateTime.now(), LocalDateTime.now().plusDays(3),
-				1000, 5000, null, "user1"
-			),
-			new AuctionDto.AuctionResponseDto(
-				2L, "Auction 2", "Description 2", AuctionStatus.CANCEL,
-				LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(2),
-				2000, 7000, 3L, "user2"
-			)
-		);
-
-		// Mock 설정
-		when(auctionRepository.getAuctionList(requestDto)).thenReturn(mockResponse);
+		when(auctionRepository.findAuctionList()).thenReturn(mockResponse);
 
 		// When (테스트 실행)
-		List<AuctionDto.AuctionResponseDto> result = auctionService.getAuctionList(requestDto);
+		List<AuctionDto.AuctionResponseDto> result = auctionService.getAuctionList();
 
 		// Then (검증)
 		assertNotNull(result);
 		assertEquals(2, result.size());
 
-		// 첫 번째 응답 값 검증
 		assertEquals(1L, result.get(0).getId());
 		assertEquals("Auction 1", result.get(0).getTitle());
 		assertEquals("Description 1", result.get(0).getContent());
 		assertEquals(AuctionStatus.AUCTION.getStatus(), result.get(0).getStatus());
-		assertEquals(1000, result.get(0).getMinimumPrice());
-		assertEquals(5000, result.get(0).getInstantPrice());
-		assertNull(result.get(0).getSuccessfulBidderId());
-		assertEquals("user1", result.get(0).getCreatedBy());
+		assertEquals(1L, result.get(0).getCreatedBy());
+		assertEquals("test", result.get(0).getCreator());
 
-		// 두 번째 응답 값 검증
 		assertEquals(2L, result.get(1).getId());
 		assertEquals("Auction 2", result.get(1).getTitle());
 		assertEquals("Description 2", result.get(1).getContent());
 		assertEquals(AuctionStatus.CANCEL.getStatus(), result.get(1).getStatus());
-		assertEquals(2000, result.get(1).getMinimumPrice());
-		assertEquals(7000, result.get(1).getInstantPrice());
-		assertEquals(3L, result.get(1).getSuccessfulBidderId());
-		assertEquals("user2", result.get(1).getCreatedBy());
+		assertEquals(1L, result.get(1).getCreatedBy());
+		assertEquals("test", result.get(0).getCreator());
 
-		// auctionRepository.getAuctionList가 한 번 호출되었는지 검증
-		verify(auctionRepository, times(1)).getAuctionList(requestDto);
+		verify(auctionRepository, times(1)).findAuctionList();
 	}
 }

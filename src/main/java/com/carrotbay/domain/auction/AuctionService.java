@@ -2,6 +2,7 @@ package com.carrotbay.domain.auction;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -10,7 +11,6 @@ import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -20,40 +20,70 @@ public class AuctionService {
 	private final AuctionRepository auctionRepository;
 	private final UserService userService;
 
-	public Long postAuction(HttpSession session, AuctionDto.UpsertAuctionDto postDto) {
-		User findUser = userService.getUserById(session);
-		Auction auction = auctionRepository.save(postDto.toEntity(findUser));
-		return auction.getId();
+	public AuctionDto.PostAuctionResponseDto postAuction(Long userId, AuctionDto.CreateAuctionDto postDto) {
+		User user = userService.getUserById(userId);
+		Auction auction = auctionRepository.save(postDto.toEntity(user));
+		return AuctionDto.PostAuctionResponseDto.builder()
+			.id(auction.getId())
+			.build();
 	}
 
-	public AuctionDto.AuctionResponseDto modifyAuction(HttpSession session, Long auctionId,
-		AuctionDto.UpsertAuctionDto modifyDto) {
-		User findUser = userService.getUserById(session);
-		Auction findAuction = auctionRepository.findById(auctionId)
-			.orElseThrow(() -> new IllegalArgumentException("해당 경매내역이 존재하지않습니다."));
+	public AuctionDto.ModifyAuctionResponseDto modifyAuction(Long userId, Long auctionId,
+		AuctionDto.ModifyAuctionDto modifyDto) {
 
-		if (!Objects.equals(findUser.getId(), findAuction.getCreatedBy().getId())) {
+		User user = userService.getUserById(userId);
+		Auction auction = validateAuctionOwner(user.getId(), auctionId);
+		auction.update(modifyDto.getTitle(), modifyDto.getContent(), modifyDto.getEndDate(),
+			modifyDto.getMinimumPrice(), modifyDto.getInstantPrice());
+		Auction savedAuction = auctionRepository.save(auction);
+
+		return AuctionDto.ModifyAuctionResponseDto.builder()
+			.id(savedAuction.getId())
+			.title(savedAuction.getTitle())
+			.content(savedAuction.getContent())
+			.status(savedAuction.getStatus().getStatus())
+			.startDate(savedAuction.getCreatedAt())
+			.endDate(savedAuction.getEndDate())
+			.minimumPrice(savedAuction.getMinimumPrice())
+			.instantPrice(savedAuction.getInstantPrice())
+			.successfulBidderId(
+				auction.getSuccessfulBidder() != null ? auction.getSuccessfulBidder().getId() : null)
+			.createdBy(savedAuction.getCreatedBy().getId())
+			.creator(savedAuction.getCreatedBy().getNickname())
+			.build();
+	}
+
+	public AuctionDto.DeleteAuctionResponseDto deleteAuction(Long userId, Long auctionId) {
+		User user = userService.getUserById(userId);
+		Auction auction = validateAuctionOwner(user.getId(), auctionId);
+		auction.delete();
+		auctionRepository.save(auction);
+		return AuctionDto.DeleteAuctionResponseDto.builder()
+			.isDeleted(true)
+			.build();
+	}
+
+	public List<AuctionDto.AuctionResponseDto> getAuctionList() {
+		return auctionRepository.findAuctionList().stream()
+			.map(auction -> AuctionDto.AuctionResponseDto.builder()
+				.id(auction.getId())
+				.title(auction.getTitle())
+				.content(auction.getContent())
+				.status(auction.getStatus().getStatus())
+				.startDate(auction.getCreatedAt())
+				.endDate(auction.getEndDate())
+				.createdBy(auction.getCreatedBy() != null ? auction.getCreatedBy().getId() : null)
+				.creator(auction.getCreatedBy() != null ? auction.getCreatedBy().getNickname() : null)
+				.build())
+			.collect(Collectors.toList());
+	}
+
+	public Auction validateAuctionOwner(Long userId, Long auctionId) {
+		Auction auction = auctionRepository.findById(auctionId)
+			.orElseThrow(() -> new IllegalArgumentException("해당 경매내역이 존재하지않습니다."));
+		if (!Objects.equals(userId, auction.getCreatedBy().getId())) {
 			throw new IllegalArgumentException("작성자가 아닙니다.");
 		}
-		findAuction.update(modifyDto);
-		Auction saveAuction = auctionRepository.save(findAuction);
-		return new AuctionDto.AuctionResponseDto(saveAuction);
-	}
-
-	public boolean deleteAuction(HttpSession session, Long id) {
-		User findUser = userService.getUserById(session);
-		Auction findAuction = auctionRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("해당 경매내역이 존재하지않습니다."));
-
-		if (!Objects.equals(findUser.getId(), findAuction.getCreatedBy().getId())) {
-			throw new IllegalArgumentException("작성자가 아닙니다.");
-		}
-		findAuction.update(true);
-		auctionRepository.save(findAuction);
-		return true;
-	}
-
-	public List<AuctionDto.AuctionResponseDto> getAuctionList(AuctionDto.AuctionRequestDto dto) {
-		return auctionRepository.getAuctionList(dto);
+		return auction;
 	}
 }

@@ -36,7 +36,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_제목이_null인_경우() throws Exception {
 
 		// given
-		AuctionDto.UpsertAuctionDto auctionDto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -53,8 +53,9 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_제목이_5_20자가_아닌_경우() throws Exception {
 
 		// given
-		AuctionDto.UpsertAuctionDto auctionDto = new AuctionDto.UpsertAuctionDto();
-		auctionDto.setTitle("test");
+		AuctionDto.CreateAuctionDto auctionDto = AuctionDto.CreateAuctionDto.builder()
+			.title("test")
+			.build();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -71,7 +72,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_본문이_null인_경우() throws Exception {
 
 		// given
-		AuctionDto.UpsertAuctionDto auctionDto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -88,7 +89,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_종료날짜가_null인_경우() throws Exception {
 
 		// given
-		AuctionDto.UpsertAuctionDto auctionDto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -105,7 +106,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_최소가격이_0인_경우() throws Exception {
 
 		// given
-		AuctionDto.UpsertAuctionDto auctionDto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -122,7 +123,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_즉시낙찰가격이_0인_경우() throws Exception {
 
 		// given
-		AuctionDto.UpsertAuctionDto auctionDto = new AuctionDto.UpsertAuctionDto();
+		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then

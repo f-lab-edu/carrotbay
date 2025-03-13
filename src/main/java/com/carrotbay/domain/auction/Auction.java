@@ -2,11 +2,11 @@ package com.carrotbay.domain.auction;
 
 import java.time.LocalDateTime;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.carrotbay.domain.auction.dto.AuctionDto;
 import com.carrotbay.domain.user.User;
 
 import jakarta.persistence.Column;
@@ -74,7 +74,7 @@ public class Auction {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "updated_by", nullable = true)
-	private User updateBy;
+	private User updatedBy;
 
 	@ManyToOne(fetch = FetchType.LAZY) // 여러 개의 엔티티가 하나의 엔티티를 참조하는 관계를 나타낸다.
 	@JoinColumn(name = "successful_bidder_user_id") // 외래 키 컬럼을 지정하는 어노테이션. @ManyToOne 관계에서 연결할 외래 키 컬럼 이름을 설정함.
@@ -83,7 +83,7 @@ public class Auction {
 	@Builder
 	public Auction(Long id, String title, String content, AuctionStatus status, LocalDateTime endDate,
 		LocalDateTime actualEndDate, int minimumPrice, int instantPrice, boolean isDelete, LocalDateTime modifiedAt,
-		LocalDateTime createdAt, User createdBy, User updateBy, User successfulBidder) {
+		LocalDateTime createdAt, User createdBy, User updatedBy, User successfulBidder) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
@@ -96,20 +96,30 @@ public class Auction {
 		this.modifiedAt = modifiedAt;
 		this.createdAt = createdAt;
 		this.createdBy = createdBy;
-		this.updateBy = updateBy;
+		this.updatedBy = updatedBy;
 		this.successfulBidder = successfulBidder;
 	}
 
-	public void update(AuctionDto.UpsertAuctionDto dto) {
-		this.title = dto.getTitle();
-		this.content = dto.getContent();
-		this.endDate = dto.getEndDate();
-		this.minimumPrice = dto.getMinimumPrice();
-		this.instantPrice = dto.getInstantPrice();
+	public void update(String title, String content, LocalDateTime endDate, int minimumPrice, int instantPrice) {
+		if (!StringUtils.isBlank(title)) {
+			this.title = title;
+		}
+		if (!StringUtils.isBlank(content)) {
+			this.content = content;
+		}
+		if (endDate != null) {
+			this.endDate = endDate;
+		}
+		if (minimumPrice < 0) {
+			this.minimumPrice = minimumPrice;
+		}
+		if (instantPrice < 0) {
+			this.instantPrice = instantPrice;
+		}
 	}
 
-	public void update(boolean isDelete) {
-		this.isDelete = isDelete;
+	public void delete() {
+		this.isDelete = true;
 		this.status = AuctionStatus.CANCEL;
 	}
 }
