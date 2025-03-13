@@ -35,14 +35,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'org.mindrot:jbcrypt:0.4'
-
-    // QueryDsl
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-
-    implementation 'org.apache.commons:commons-lang3:3.12.0' // 이거를 추가하는 게 맞는지 확인
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
 }
 
 
