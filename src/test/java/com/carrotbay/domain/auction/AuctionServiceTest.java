@@ -213,31 +213,27 @@ class AuctionServiceTest extends DummyObject {
 		// Given
 
 		User createdBy = newMockUser(1L, "test");
-		User bidder = newMockUser(2L, "test2");
-		List<Auction> mockResponse = List.of(
-			Auction.builder()
+		User createdBy2 = newMockUser(2L, "test2");
+		List<AuctionDto.AuctionResponseDto> mockResponse = List.of(
+			AuctionDto.AuctionResponseDto.builder()
 				.id(1L)
 				.title("Auction 1")
 				.content("Description 1")
 				.status(AuctionStatus.AUCTION)
 				.endDate(LocalDateTime.now())
-				.createdAt(LocalDateTime.now())
-				.minimumPrice(100)
-				.instantPrice(10)
-				.createdBy(createdBy)
-				.successfulBidder(null)
+				.startDate(LocalDateTime.now())
+				.createdBy(1L)
+				.creator(createdBy.getNickname())
 				.build(),
-			Auction.builder()
+			AuctionDto.AuctionResponseDto.builder()
 				.id(2L)
 				.title("Auction 2")
 				.content("Description 2")
 				.status(AuctionStatus.CANCEL)
 				.endDate(LocalDateTime.now())
-				.createdAt(LocalDateTime.now())
-				.minimumPrice(200)
-				.instantPrice(20)
-				.createdBy(createdBy)
-				.successfulBidder(bidder)
+				.startDate(LocalDateTime.now())
+				.createdBy(1L)
+				.creator(createdBy.getNickname())
 				.build()
 		);
 

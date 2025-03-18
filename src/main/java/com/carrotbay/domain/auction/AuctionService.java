@@ -2,7 +2,6 @@ package com.carrotbay.domain.auction;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -64,18 +63,7 @@ public class AuctionService {
 	}
 
 	public List<AuctionDto.AuctionResponseDto> getAuctionList() {
-		return auctionRepository.findAuctionList().stream()
-			.map(auction -> AuctionDto.AuctionResponseDto.builder()
-				.id(auction.getId())
-				.title(auction.getTitle())
-				.content(auction.getContent())
-				.status(auction.getStatus().getStatus())
-				.startDate(auction.getCreatedAt())
-				.endDate(auction.getEndDate())
-				.createdBy(auction.getCreatedBy() != null ? auction.getCreatedBy().getId() : null)
-				.creator(auction.getCreatedBy() != null ? auction.getCreatedBy().getNickname() : null)
-				.build())
-			.collect(Collectors.toList());
+		return auctionRepository.findAuctionList();
 	}
 
 	public Auction validateAuctionOwner(Long userId, Long auctionId) {

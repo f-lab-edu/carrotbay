@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionStatus;
 import com.carrotbay.domain.user.User;
+import com.querydsl.core.annotations.QueryProjection;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -104,8 +105,6 @@ public class AuctionDto {
 	}
 
 	@Getter
-	@Builder
-	@AllArgsConstructor
 	@NoArgsConstructor
 	public static class AuctionResponseDto {
 		private Long id;
@@ -116,6 +115,20 @@ public class AuctionDto {
 		private LocalDateTime endDate;
 		private Long createdBy;
 		private String creator;
+
+		@Builder
+		@QueryProjection
+		public AuctionResponseDto(Long id, String title, String content, AuctionStatus status, LocalDateTime startDate,
+			LocalDateTime endDate, Long createdBy, String creator) {
+			this.id = id;
+			this.title = title;
+			this.content = content;
+			this.status = status.getStatus();
+			this.startDate = startDate;
+			this.endDate = endDate;
+			this.createdBy = createdBy;
+			this.creator = creator;
+		}
 	}
 
 	@Getter
