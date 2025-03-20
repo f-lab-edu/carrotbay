@@ -22,9 +22,8 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
-	private final HttpSession httpSession;
 	private static String SESSION_KEY = "USER_ID";
-	private static int SESSEION_TIME = 60 * 30;
+	private static int SESSION_TIME = 60 * 30;
 
 	@PostMapping("") // HTTP POST 요청을 처리하며, URL 경로가 "/registry"인 요청을 해당 메소드가 처리하도록 지정하는 어노테이션
 	public ResponseEntity<?> register(
@@ -46,8 +45,12 @@ public class UserController {
 	public ResponseEntity<?> login(@RequestBody @Valid UserDto.LoginRequestDto loginRequestDto,
 		BindingResult bindingResult, HttpServletRequest httpServletRequest) {
 		Long userId = userService.login(httpServletRequest.getSession(false), loginRequestDto);
+		if (userId == null) {
+			return new ResponseEntity<>("로그인 실패", HttpStatus.UNAUTHORIZED);
+		}
+		HttpSession httpSession = httpServletRequest.getSession(true);
 		httpSession.setAttribute(SESSION_KEY, userId);
-		httpSession.setMaxInactiveInterval(SESSEION_TIME);
+		httpSession.setMaxInactiveInterval(SESSION_TIME);
 		return new ResponseEntity<>(userId, HttpStatus.OK);
 	}
 

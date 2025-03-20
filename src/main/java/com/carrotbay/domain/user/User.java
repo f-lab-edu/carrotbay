@@ -50,11 +50,11 @@ public class User {
 	@Column(name = "status", nullable = true, length = 10)
 	private UserStatus status;
 
-	@LastModifiedDate //  // Entity가 생성되어 저장될 때 시간이 자동 저장
+	@LastModifiedDate // Entity가 생성되어 저장될 때 시간이 자동 저장
 	@Column(name = "modified_at", nullable = false)
 	private LocalDateTime modifiedAt;
 
-	@CreatedDate //  // Entity가 생성되어 저장될 때 시간이 자동 저장
+	@CreatedDate // Entity가 생성되어 저장될 때 시간이 자동 저장
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
