@@ -6,15 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.carrotbay.domain.auction.dto.AuctionDto;
-import com.carrotbay.domain.auction.repository.AuctionRepository;
-import com.carrotbay.domain.user.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Transactional
@@ -23,11 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 class AuctionControllerTest {
 	@Autowired
 	private MockMvc mvc;
-	@MockitoBean
-	private AuctionService auctionService;
-	private UserService userService;
-	@MockitoBean
-	private AuctionRepository auctionRepository;
 	@Autowired
 	private ObjectMapper om;
 

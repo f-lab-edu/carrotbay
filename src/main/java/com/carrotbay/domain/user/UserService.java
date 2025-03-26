@@ -54,7 +54,8 @@ public class UserService {
 	}
 
 	public User getUserById(Long id) {
-		return userRepository.findById(id)
-			.orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지않습니다."));
+		return userRepository.findById(id).orElseThrow(
+			() -> new NullPointerException("해당 사용자가 존재하지않습니다.")
+		);
 	}
 }

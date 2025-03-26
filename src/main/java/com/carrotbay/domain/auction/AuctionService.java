@@ -62,7 +62,7 @@ public class AuctionService {
 			.build();
 	}
 
-	public List<AuctionDto.AuctionResponseDto> getAuctionList() {
+	public List<AuctionDto.AuctionResponseDto> findAuctionList() {
 		return auctionRepository.findAuctionList();
 	}
 
@@ -73,5 +73,17 @@ public class AuctionService {
 			throw new IllegalArgumentException("작성자가 아닙니다.");
 		}
 		return auction;
+	}
+
+	public Auction getAuctionWithLock(Long id) {
+		return auctionRepository.getAuctionWithLock(id).orElseThrow(
+			() -> new IllegalArgumentException("해당 경매가 존재하지않습니다.")
+		);
+	}
+
+	public Auction getAuctionById(Long id) {
+		return auctionRepository.findById(id).orElseThrow(
+			() -> new IllegalArgumentException("해당 경매가 존재하지않습니다.")
+		);
 	}
 }

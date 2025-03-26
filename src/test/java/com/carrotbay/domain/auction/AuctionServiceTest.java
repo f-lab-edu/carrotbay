@@ -38,26 +38,10 @@ class AuctionServiceTest extends DummyObject {
 	private final Long fakeAuctionId = 999L;
 
 	@Test
-	@DisplayName("session이 null이면 경매 등록에 실패한다.")
-	void 경매등록_실패케이스_Session이_null인_경우_등록에_실패한다() {
-		// given
-		String exceptionMessage = "session이 null입니다";
-		AuctionDto.CreateAuctionDto dto = new AuctionDto.CreateAuctionDto();
-		// when
-		given(userService.getUserById(null)).willThrow(new NullPointerException(exceptionMessage));
-		// then
-		NullPointerException exception = assertThrows(NullPointerException.class,
-			() -> auctionService.postAuction(null, dto));
-		assertEquals(exceptionMessage, exception.getMessage());
-	}
-
-	@Test
 	@DisplayName("사용자가 존재하지않으면 등록에 실패한다.")
 	void 경매등록_실패케이스_사용자가_존재하지않는_경우_등록에_실패한다() {
 		// given
 		AuctionDto.CreateAuctionDto dto = new AuctionDto.CreateAuctionDto();
-		;
-		// userService.getUserById(session) 호출 시 예외 발생하도록 설정
 		given(userService.getUserById(fakeSessionId)).willThrow(new NullPointerException("해당 사용자가 존재하지않습니다."));
 
 		// when & then
@@ -65,7 +49,7 @@ class AuctionServiceTest extends DummyObject {
 	}
 
 	@Test
-	@DisplayName("경매등록_성공케이스.")
+	@DisplayName("경매등록_성공케이스")
 	void 경매등록_성공케이스() {
 		// given
 		AuctionDto.CreateAuctionDto dto = new AuctionDto.CreateAuctionDto();
@@ -240,7 +224,7 @@ class AuctionServiceTest extends DummyObject {
 		when(auctionRepository.findAuctionList()).thenReturn(mockResponse);
 
 		// When (테스트 실행)
-		List<AuctionDto.AuctionResponseDto> result = auctionService.getAuctionList();
+		List<AuctionDto.AuctionResponseDto> result = auctionService.findAuctionList();
 
 		// Then (검증)
 		assertNotNull(result);
