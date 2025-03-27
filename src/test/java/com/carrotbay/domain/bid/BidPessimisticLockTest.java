@@ -75,7 +75,6 @@ class BidPessimisticLockTest extends DummyObject {
 			});
 		}
 
-		// 모든 스레드가 완료될 때까지 기다림
 		countDownLatch.await();
 		// then
 		BidDto.BidResponseDto highestBid = bidRepository.findHighestBidByAuctionId(auction.getId());
