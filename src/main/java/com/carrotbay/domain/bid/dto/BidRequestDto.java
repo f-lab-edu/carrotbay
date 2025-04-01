@@ -1,7 +1,5 @@
 package com.carrotbay.domain.bid.dto;
 
-import java.time.LocalDateTime;
-
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.bid.Bid;
 import com.carrotbay.domain.bid.BidStatus;
@@ -13,10 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class BidDto {
+public class BidRequestDto {
 
 	@Getter
 	@NoArgsConstructor
+	@AllArgsConstructor
 	public static class CreateBidDto {
 		@Min(value = 1, message = "입찰 가격은 0원이 될 수 없습니다.")
 		private int bidPrice;
@@ -25,39 +24,18 @@ public class BidDto {
 			return Bid.builder()
 				.bidPrice(this.bidPrice)
 				.status(BidStatus.BID)
-				.isDelete(false)
-				.createdBy(user)
+				.isDeleted(false)
+				.user(user)
+				.createdBy(user.getId())
 				.auction(auction)
 				.build();
-		}
-
-		public CreateBidDto(int bidPrice) {
-			this.bidPrice = bidPrice;
-		}
-	}
-
-	@Getter
-	public static class BidResponseDto {
-		private Long id;
-		private int bidPrice;
-		private LocalDateTime createdAt;
-		private Long auctionId;
-		private Long userId;
-
-		public BidResponseDto(Long id, int bidPrice, LocalDateTime createdAt, Long auctionId,
-			Long userId) {
-			this.id = id;
-			this.bidPrice = bidPrice;
-			this.createdAt = createdAt;
-			this.auctionId = auctionId;
-			this.userId = userId;
 		}
 	}
 
 	@Getter
 	@NoArgsConstructor
 	@AllArgsConstructor
-	public static class BidCancelRequestDto {
+	public static class DeleteBidDto {
 		@NotNull(message = "경매 id를 입력해주세요.")
 		private Long auctionId;
 	}

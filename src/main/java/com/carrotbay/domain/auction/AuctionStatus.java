@@ -1,15 +1,14 @@
 package com.carrotbay.domain.auction;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public enum AuctionStatus {
 	AUCTION("경매 진행 중"),
 	CLOSE("경매 완료"),
 	CANCEL("경매 취소");
 
 	private final String status;
-
-	AuctionStatus(String status) {
-		this.status = status;
-	}
 
 	public String getStatus() {
 		return this.status;

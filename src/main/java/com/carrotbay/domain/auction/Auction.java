@@ -69,8 +69,11 @@ public class Auction {
 	private LocalDateTime createdAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "created_by", nullable = false)
-	private User createdBy;
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	@Column(name = "created_by", nullable = false)
+	private Long createdBy;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "updated_by", nullable = true)
@@ -83,7 +86,7 @@ public class Auction {
 	@Builder
 	public Auction(Long id, String title, String content, AuctionStatus status, LocalDateTime endDate,
 		LocalDateTime actualEndDate, int minimumPrice, int instantPrice, boolean isDelete, LocalDateTime modifiedAt,
-		LocalDateTime createdAt, User createdBy, User updatedBy, User successfulBidder) {
+		LocalDateTime createdAt, User user, Long createdBy, User updatedBy, User successfulBidder) {
 		this.id = id;
 		this.title = title;
 		this.content = content;
@@ -93,6 +96,7 @@ public class Auction {
 		this.minimumPrice = minimumPrice;
 		this.instantPrice = instantPrice;
 		this.isDelete = isDelete;
+		this.user = user;
 		this.modifiedAt = modifiedAt;
 		this.createdAt = createdAt;
 		this.createdBy = createdBy;

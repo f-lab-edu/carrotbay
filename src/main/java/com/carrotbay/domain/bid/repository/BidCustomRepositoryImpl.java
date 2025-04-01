@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.carrotbay.domain.bid.dto.BidDto;
+import com.carrotbay.domain.bid.dto.BidResponseDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
@@ -19,35 +19,33 @@ public class BidCustomRepositoryImpl implements BidCustomRepository {
 	private final JPAQueryFactory query;
 
 	@Override
-	public BidDto.BidResponseDto findHighestBidByAuctionId(Long auctionId) {
+	public BidResponseDto.BidDetailDto findHighestBidByAuctionId(Long auctionId) {
 		return query.select(
 				Projections.constructor(
-					BidDto.BidResponseDto.class,
+					BidResponseDto.BidDetailDto.class,
 					bid.id,
 					bid.bidPrice,
 					bid.createdAt,
 					bid.auction.id,
-					bid.createdBy.id
-				)
-			).from(bid)
-			.where(bid.auction.id.eq(auctionId).and(bid.isDelete.eq(false)))
+					bid.user.id))
+			.from(bid)
+			.where(bid.auction.id.eq(auctionId).and(bid.isDeleted.eq(false)))
 			.orderBy(bid.bidPrice.desc())
 			.fetchFirst();
 	}
 
 	@Override
-	public List<BidDto.BidResponseDto> findBidListByAuctionId(Long auctionId) {
+	public List<BidResponseDto.BidListResponseDto> findBidListByAuctionId(Long auctionId) {
 		return query.select(
 				Projections.constructor(
-					BidDto.BidResponseDto.class,
+					BidResponseDto.BidListResponseDto.class,
 					bid.id,
 					bid.bidPrice,
 					bid.createdAt,
 					bid.auction.id,
-					bid.createdBy.id
-				)
-			).from(bid)
-			.where(bid.auction.id.eq(auctionId).and(bid.isDelete.eq(false)))
+					bid.user.id))
+			.from(bid)
+			.where(bid.auction.id.eq(auctionId).and(bid.isDeleted.eq(false)))
 			.orderBy(bid.bidPrice.desc())
 			.fetch();
 	}

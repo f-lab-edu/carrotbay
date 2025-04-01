@@ -15,10 +15,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.carrotbay.common.exception.NotFoundException;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionService;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
-import com.carrotbay.domain.bid.dto.BidDto;
+import com.carrotbay.domain.bid.dto.BidRequestDto;
+import com.carrotbay.domain.bid.dto.BidResponseDto;
 import com.carrotbay.domain.bid.repository.BidRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
@@ -45,7 +47,7 @@ class BidServiceTest extends DummyObject {
 	@DisplayName("경매 시간이 현재 시간보다 늦은 경우 입찰에 실패한다.")
 	void 입찰등록_실패케이스_경매시각이_지난_경우_입찰에_실패한다() {
 		// given
-		BidDto.CreateBidDto dto = new BidDto.CreateBidDto(1000);
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(1000);
 		User user = newMockUser(userId, "test");
 		Auction auction = newMockExpiredAuction(1L, user);
 		when(userService.getUserById(any())).thenReturn(user);
@@ -60,10 +62,11 @@ class BidServiceTest extends DummyObject {
 	@DisplayName("입찰가가 최고 입찰가보다 작은 경우 입찰에 실패한다.")
 	void 입찰등록_실패케이스_최고입찰가보다_입찰가가_작은_경우_입찰에_실패한다() {
 		// given
-		BidDto.CreateBidDto dto = new BidDto.CreateBidDto(10);
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(10);
 		User user = newMockUser(userId, "test");
 		Auction auction = newMockAuction(1L, user);
-		BidDto.BidResponseDto responseDto = new BidDto.BidResponseDto(1L, 100, LocalDateTime.now(), auction.getId(),
+		BidResponseDto.BidDetailDto responseDto = new BidResponseDto.BidDetailDto(1L, 100, LocalDateTime.now(),
+			auction.getId(),
 			user.getId());
 
 		when(userService.getUserById(any())).thenReturn(user);
@@ -80,11 +83,12 @@ class BidServiceTest extends DummyObject {
 	@DisplayName("입찰등록 성공케이스")
 	void 입찰등록_성공케이스() {
 		// given
-		BidDto.CreateBidDto dto = new BidDto.CreateBidDto(1000);
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(1000);
 		User user = newMockUser(userId, "test");
 		Auction auction = newMockAuction(auctionId, user);
 		Bid bid = newBid(bidId, user, auction);
-		BidDto.BidResponseDto responseDto = new BidDto.BidResponseDto(1L, 10, LocalDateTime.now(), auction.getId(),
+		BidResponseDto.BidDetailDto responseDto = new BidResponseDto.BidDetailDto(1L, 10, LocalDateTime.now(),
+			auction.getId(),
 			user.getId());
 
 		when(userService.getUserById(any())).thenReturn(user);
@@ -101,7 +105,7 @@ class BidServiceTest extends DummyObject {
 	@DisplayName("입찰가가 최고 입찰가보다 작은 경우 입찰에 실패한다.")
 	void 입찰수정_실패케이스_입찰이_존재하지않는_경우_입찰에_실패한다() {
 		// given
-		BidDto.BidCancelRequestDto dto = new BidDto.BidCancelRequestDto(auctionId);
+		BidRequestDto.DeleteBidDto dto = new BidRequestDto.DeleteBidDto(auctionId);
 		User user = newMockUser(userId, "test");
 		Auction auction = newMockAuction(auctionId, user);
 
@@ -109,7 +113,7 @@ class BidServiceTest extends DummyObject {
 		when(auctionService.getAuctionById(any())).thenReturn(auction);
 		when(bidRepository.findByIdAndCreatedBy(bidId, user)).thenReturn(Optional.empty());
 		// when
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+		NotFoundException exception = assertThrows(NotFoundException.class,
 			() -> bidService.cancelBid(user.getId(), bidId, dto));
 		// then
 		assertEquals("입찰한 내역이 존재하지않습니다.", exception.getMessage());
@@ -119,7 +123,7 @@ class BidServiceTest extends DummyObject {
 	@DisplayName("입찰가가 최고 입찰가보다 작은 경우 입찰에 성공한다.")
 	void 입찰수정_성공케이스() {
 		// given
-		BidDto.BidCancelRequestDto dto = new BidDto.BidCancelRequestDto(auctionId);
+		BidRequestDto.DeleteBidDto dto = new BidRequestDto.DeleteBidDto(auctionId);
 		User user = newMockUser(userId, "test");
 		Auction auction = newMockAuction(auctionId, user);
 		Bid bid = newBid(bidId, user, auction);

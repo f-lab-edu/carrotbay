@@ -49,7 +49,8 @@ public class DummyObject {
 			.isDelete(false)
 			.createdAt(LocalDateTime.now())
 			.endDate(LocalDateTime.now().plusMonths(1))
-			.createdBy(user)
+			.createdBy(user.getId())
+			.user(user)
 			.build();
 	}
 
@@ -64,7 +65,8 @@ public class DummyObject {
 			.isDelete(false)
 			.createdAt(LocalDateTime.now().minusDays(1))
 			.endDate(LocalDateTime.now().minusDays(1))
-			.createdBy(user)
+			.createdBy(user.getId())
+			.user(user)
 			.build();
 	}
 
@@ -78,7 +80,8 @@ public class DummyObject {
 			.instantPrice(10)
 			.isDelete(false)
 			.createdAt(LocalDateTime.now())
-			.createdBy(user)
+			.user(user)
+			.createdBy(user.getId())
 			.build();
 	}
 
@@ -89,7 +92,8 @@ public class DummyObject {
 			.bidPrice(1000)
 			.createdAt(LocalDateTime.now())
 			.status(BidStatus.BID)
-			.createdBy(user)
+			.user(user)
+			.createdBy(user.getId())
 			.build();
 	}
 }

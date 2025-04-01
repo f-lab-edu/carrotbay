@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.carrotbay.domain.bid.dto.BidDto;
+import com.carrotbay.domain.bid.dto.BidRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @AutoConfigureMockMvc
@@ -39,7 +39,7 @@ class BidControllerTest {
 	void 입찰등록_실패케이스_입찰가가_0인_경우() throws Exception {
 
 		// given
-		BidDto.CreateBidDto dto = new BidDto.CreateBidDto(0);
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(0);
 		String requestBody = om.writeValueAsString(dto);
 
 		// when, then
@@ -56,7 +56,7 @@ class BidControllerTest {
 	void 입찰등록_성공케이스() throws Exception {
 
 		// given
-		BidDto.CreateBidDto dto = new BidDto.CreateBidDto(100);
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(100);
 		String requestBody = om.writeValueAsString(dto);
 		given(bidService.postBid(any(), any(), any()))
 			.willReturn(bidId);
@@ -83,7 +83,7 @@ class BidControllerTest {
 	void 입찰수정_실패케이스_auctionId가_null인_경우() throws Exception {
 
 		// given
-		BidDto.BidCancelRequestDto dto = new BidDto.BidCancelRequestDto(null);
+		BidRequestDto.DeleteBidDto dto = new BidRequestDto.DeleteBidDto(null);
 		String requestBody = om.writeValueAsString(dto);
 
 		// when, then
@@ -96,11 +96,11 @@ class BidControllerTest {
 	}
 
 	@Test
-	@DisplayName("입찰수정 성공.")
+	@DisplayName("입찰삭제 성공.")
 	void 입찰수정_성공케이스() throws Exception {
 
 		// given
-		BidDto.BidCancelRequestDto dto = new BidDto.BidCancelRequestDto(auctionId);
+		BidRequestDto.DeleteBidDto dto = new BidRequestDto.DeleteBidDto(auctionId);
 		String requestBody = om.writeValueAsString(dto);
 		given(bidService.cancelBid(any(), any(), any()))
 			.willReturn(true);

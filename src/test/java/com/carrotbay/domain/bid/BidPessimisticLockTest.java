@@ -16,7 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
-import com.carrotbay.domain.bid.dto.BidDto;
+import com.carrotbay.domain.bid.dto.BidRequestDto;
+import com.carrotbay.domain.bid.dto.BidResponseDto;
 import com.carrotbay.domain.bid.repository.BidRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.repository.UserRepository;
@@ -66,7 +67,7 @@ class BidPessimisticLockTest extends DummyObject {
 			executor.submit(() -> {
 				try {
 					bidService.postBid(user.getId(), auction.getId(),
-						new BidDto.CreateBidDto(bidPrice));
+						new BidRequestDto.CreateBidDto(bidPrice));
 				} catch (Exception e) {
 					System.out.println("입찰 실패: " + bidPrice + " " + e.getMessage());
 				} finally {
@@ -77,7 +78,7 @@ class BidPessimisticLockTest extends DummyObject {
 
 		countDownLatch.await();
 		// then
-		BidDto.BidResponseDto highestBid = bidRepository.findHighestBidByAuctionId(auction.getId());
+		BidResponseDto.BidDetailDto highestBid = bidRepository.findHighestBidByAuctionId(auction.getId());
 		assertThat(highestBid).isNotNull();
 		assertThat(highestBid.getBidPrice()).isEqualTo(400);
 		assertThat(highestBid.getUserId()).isEqualTo(user.getId());

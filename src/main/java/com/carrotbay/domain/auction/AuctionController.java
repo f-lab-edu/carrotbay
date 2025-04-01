@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.carrotbay.config.auth.LoginUser;
-import com.carrotbay.domain.auction.dto.AuctionDto;
+import com.carrotbay.domain.auction.dto.AuctionRequestDto;
+import com.carrotbay.domain.auction.dto.AuctionResponseDto;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -28,28 +29,29 @@ public class AuctionController {
 	private final AuctionService auctionService;
 
 	@PostMapping("")
-	public ResponseEntity<?> postAuction(@LoginUser Long userId, @RequestBody @Valid AuctionDto.CreateAuctionDto dto,
+	public ResponseEntity<?> postAuction(@LoginUser Long userId,
+		@RequestBody @Valid AuctionRequestDto.CreateAuctionDto dto,
 		BindingResult bindingResult) {
-		AuctionDto.PostAuctionResponseDto result = auctionService.postAuction(userId, dto);
+		AuctionResponseDto.PostResponseDto result = auctionService.postAuction(userId, dto);
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/{auction_id}")
 	public ResponseEntity<?> putAuction(@PathVariable(name = "auction_id") Long auctionId, @LoginUser Long userId,
-		@RequestBody @Valid AuctionDto.ModifyAuctionDto dto, BindingResult bindingResult) {
-		AuctionDto.ModifyAuctionResponseDto responseDto = auctionService.modifyAuction(userId, auctionId, dto);
+		@RequestBody @Valid AuctionRequestDto.ModifyAuctionDto dto, BindingResult bindingResult) {
+		AuctionResponseDto.ModifyResponseDto responseDto = auctionService.modifyAuction(userId, auctionId, dto);
 		return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{auction_id}")
 	public ResponseEntity<?> deleteAuction(@PathVariable(name = "auction_id") Long auctionId, @LoginUser long userId) {
-		AuctionDto.DeleteAuctionResponseDto result = auctionService.deleteAuction(userId, auctionId);
+		AuctionResponseDto.DeleteResponseDto result = auctionService.deleteAuction(userId, auctionId);
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 
 	@GetMapping("")
 	public ResponseEntity<?> findAuctionList() {
-		List<AuctionDto.AuctionResponseDto> result = auctionService.findAuctionList();
+		List<AuctionResponseDto.AuctionListResponseDto> result = auctionService.findAuctionList();
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 }

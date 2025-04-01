@@ -42,39 +42,42 @@ public class Bid {
 	@Column(name = "status", nullable = false)
 	private BidStatus status;
 
-	@Column(name = "is_delete", nullable = false)
-	private boolean isDelete;
+	@Column(name = "is_deleted", nullable = false)
+	private boolean isDeleted;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
+
+	@ManyToOne(fetch = FetchType.LAZY) // JPA에서 두 엔티티 간 1:1 관계를 설정하면서, 관련 엔티티를 필요할 때만 불러오도록 지시하는 어노테이션
+	@JoinColumn(name = "auction_id")
+	private Auction auction;
 
 	@CreatedDate
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "created_by", nullable = false)
-	private User createdBy;
+	@Column(name = "created_by", nullable = false)
+	private Long createdBy;
 
 	@LastModifiedDate
 	@Column(name = "modified_at", nullable = true)
 	private LocalDateTime modifiedAt;
 
-	@ManyToOne(fetch = FetchType.LAZY) //JPA에서 두 엔티티 간 1:1 관계를 설정하면서, 관련 엔티티를 필요할 때만 불러오도록 지시하는 어노테이션
-	@JoinColumn(name = "auction_id")
-	private Auction auction;
-
 	@Builder
-	public Bid(Long id, int bidPrice, BidStatus status, boolean isDelete,
-		LocalDateTime createdAt,
-		User createdBy, Auction auction) {
+	public Bid(Long id, int bidPrice, BidStatus status, boolean isDeleted, LocalDateTime createdAt,
+		User user, Long createdBy, Auction auction) {
 		this.id = id;
 		this.bidPrice = bidPrice;
 		this.status = status;
-		this.isDelete = isDelete;
+		this.isDeleted = isDeleted;
+		this.user = user;
 		this.createdAt = createdAt;
 		this.createdBy = createdBy;
 		this.auction = auction;
 	}
 
 	public void delete() {
-		this.isDelete = true;
+		this.isDeleted = true;
 	}
 }

@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.carrotbay.domain.auction.dto.AuctionDto;
+import com.carrotbay.domain.auction.dto.AuctionRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Transactional
@@ -28,7 +28,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_제목이_null인_경우() throws Exception {
 
 		// given
-		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
+		AuctionRequestDto.CreateAuctionDto auctionDto = new AuctionRequestDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -45,7 +45,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_제목이_5_20자가_아닌_경우() throws Exception {
 
 		// given
-		AuctionDto.CreateAuctionDto auctionDto = AuctionDto.CreateAuctionDto.builder()
+		AuctionRequestDto.CreateAuctionDto auctionDto = AuctionRequestDto.CreateAuctionDto.builder()
 			.title("test")
 			.build();
 		String requestBody = om.writeValueAsString(auctionDto);
@@ -64,7 +64,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_본문이_null인_경우() throws Exception {
 
 		// given
-		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
+		AuctionRequestDto.CreateAuctionDto auctionDto = new AuctionRequestDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -81,7 +81,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_종료날짜가_null인_경우() throws Exception {
 
 		// given
-		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
+		AuctionRequestDto.CreateAuctionDto auctionDto = new AuctionRequestDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -98,7 +98,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_최소가격이_0인_경우() throws Exception {
 
 		// given
-		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
+		AuctionRequestDto.CreateAuctionDto auctionDto = new AuctionRequestDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
@@ -115,7 +115,7 @@ class AuctionControllerTest {
 	void 경매등록_실패케이스_즉시낙찰가격이_0인_경우() throws Exception {
 
 		// given
-		AuctionDto.CreateAuctionDto auctionDto = new AuctionDto.CreateAuctionDto();
+		AuctionRequestDto.CreateAuctionDto auctionDto = new AuctionRequestDto.CreateAuctionDto();
 		String requestBody = om.writeValueAsString(auctionDto);
 
 		// when, then
