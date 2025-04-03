@@ -20,6 +20,9 @@ public class BidRequestDto {
 		@Min(value = 1, message = "입찰 가격은 0원이 될 수 없습니다.")
 		private int bidPrice;
 
+		@NotNull(message = "경매 id를 입력해주세요.")
+		private Long auctionId;
+
 		public Bid toEntity(User user, Auction auction) {
 			return Bid.builder()
 				.bidPrice(this.bidPrice)

@@ -1,8 +1,8 @@
 package com.carrotbay.domain.bid;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum BidStatus {
 	BID("입찰"),
 	CANCEL("취소");

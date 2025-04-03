@@ -1,8 +1,8 @@
 package com.carrotbay.domain.auction;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor // 필수(final 또는 @NonNull 필드만 포함한 생성자)를 자동으로 만들어준다.
 public enum AuctionStatus {
 	AUCTION("경매 진행 중"),
 	CLOSE("경매 완료"),

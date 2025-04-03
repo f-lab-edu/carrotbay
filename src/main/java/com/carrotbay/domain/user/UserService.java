@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import com.carrotbay.common.exception.NotFoundException;
 import com.carrotbay.domain.user.dto.UserRequestDto;
 import com.carrotbay.domain.user.dto.UserResponseDto;
 import com.carrotbay.domain.user.repository.UserRepository;
@@ -39,7 +38,7 @@ public class UserService {
 			throw new IllegalArgumentException("이미 로그인 상태입니다.");
 		}
 		User loginUser = userRepository.findByUsername(loginRequestDto.getUsername())
-			.orElseThrow(() -> new NotFoundException("해당 사용자가 존재하지않습니다."));
+			.orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지않습니다."));
 		if (BCrypt.checkpw(loginRequestDto.getPassword(), loginUser.getPassword())) {
 			return loginUser.getId();
 		} else {
@@ -57,7 +56,7 @@ public class UserService {
 
 	public User getUserById(Long id) {
 		return userRepository.findById(id).orElseThrow(
-			() -> new NotFoundException("해당 사용자가 존재하지않습니다.")
+			() -> new NullPointerException("해당 사용자가 존재하지않습니다.")
 		);
 	}
 }

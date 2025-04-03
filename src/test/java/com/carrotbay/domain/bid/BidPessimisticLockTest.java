@@ -66,8 +66,7 @@ class BidPessimisticLockTest extends DummyObject {
 			final Integer bidPrice = bidPrices.get(i);
 			executor.submit(() -> {
 				try {
-					bidService.postBid(user.getId(), auction.getId(),
-						new BidRequestDto.CreateBidDto(bidPrice));
+					bidService.postBid(user.getId(), new BidRequestDto.CreateBidDto(bidPrice, auction.getId()));
 				} catch (Exception e) {
 					System.out.println("입찰 실패: " + bidPrice + " " + e.getMessage());
 				} finally {

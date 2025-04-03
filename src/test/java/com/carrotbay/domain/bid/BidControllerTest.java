@@ -39,7 +39,7 @@ class BidControllerTest {
 	void 입찰등록_실패케이스_입찰가가_0인_경우() throws Exception {
 
 		// given
-		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(0);
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(0, auctionId);
 		String requestBody = om.writeValueAsString(dto);
 
 		// when, then
@@ -56,9 +56,9 @@ class BidControllerTest {
 	void 입찰등록_성공케이스() throws Exception {
 
 		// given
-		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(100);
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(100, auctionId);
 		String requestBody = om.writeValueAsString(dto);
-		given(bidService.postBid(any(), any(), any()))
+		given(bidService.postBid(any(), any()))
 			.willReturn(bidId);
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("USER_ID", userId);

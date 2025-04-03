@@ -6,7 +6,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.carrotbay.common.exception.NotFoundException;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionService;
 import com.carrotbay.domain.bid.dto.BidRequestDto;
@@ -25,11 +24,11 @@ public class BidService {
 	private final AuctionService auctionService;
 
 	@Transactional
-	public Long postBid(Long userId, Long auctionId, BidRequestDto.CreateBidDto postDto) {
+	public Long postBid(Long userId, BidRequestDto.CreateBidDto postDto) {
 		User user = userService.getUserById(userId);
-		Auction auction = auctionService.getAuctionWithLock(auctionId);
+		Auction auction = auctionService.getAuctionWithLock(postDto.getAuctionId());
 		checkAuctionTime(auction.getEndDate());
-		BidResponseDto.BidDetailDto highestBid = bidRepository.findHighestBidByAuctionId(auctionId);
+		BidResponseDto.BidDetailDto highestBid = bidRepository.findHighestBidByAuctionId(postDto.getAuctionId());
 		if (highestBid != null && postDto.getBidPrice() <= highestBid.getBidPrice()) {
 			throw new IllegalArgumentException("입찰가는 현재 최고 입찰가보다 높아야 합니다.");
 		}
@@ -43,7 +42,7 @@ public class BidService {
 		Auction auction = auctionService.getAuctionById(dto.getAuctionId());
 		checkAuctionTime(auction.getEndDate());
 		Bid bid = bidRepository.findByIdAndCreatedBy(bidId, user).orElseThrow(
-			() -> new NotFoundException("입찰한 내역이 존재하지않습니다."));
+			() -> new NullPointerException("입찰한 내역이 존재하지않습니다."));
 		bid.delete();
 		bidRepository.save(bid);
 		return true;

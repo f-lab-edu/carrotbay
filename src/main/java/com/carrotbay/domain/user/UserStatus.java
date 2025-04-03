@@ -1,8 +1,8 @@
 package com.carrotbay.domain.user;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public enum UserStatus {
 	ACTIVE("활성화"),
 	STOP("정지"),

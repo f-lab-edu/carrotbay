@@ -16,9 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.carrotbay.common.exception.NotFoundException;
 import com.carrotbay.domain.auction.dto.AuctionRequestDto;
 import com.carrotbay.domain.auction.dto.AuctionResponseDto;
+import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
@@ -44,10 +44,10 @@ class AuctionServiceTest extends DummyObject {
 	void 경매등록_실패케이스_사용자가_존재하지않는_경우_등록에_실패한다() {
 		// given
 		AuctionRequestDto.CreateAuctionDto dto = new AuctionRequestDto.CreateAuctionDto();
-		given(userService.getUserById(fakeSessionId)).willThrow(new NotFoundException("해당 사용자가 존재하지않습니다."));
+		given(userService.getUserById(fakeSessionId)).willThrow(new NullPointerException("해당 사용자가 존재하지않습니다."));
 
 		// when & then
-		assertThrows(NotFoundException.class, () -> auctionService.postAuction(fakeSessionId, dto));
+		assertThrows(NullPointerException.class, () -> auctionService.postAuction(fakeSessionId, dto));
 	}
 
 	@Test
@@ -72,8 +72,8 @@ class AuctionServiceTest extends DummyObject {
 		String exceptionMessage = "session이 null입니다";
 		AuctionRequestDto.ModifyAuctionDto dto = new AuctionRequestDto.ModifyAuctionDto();
 		// when
-		given(userService.getUserById(null)).willThrow(new NotFoundException(exceptionMessage));
-		NotFoundException exception = assertThrows(NotFoundException.class,
+		given(userService.getUserById(null)).willThrow(new NotFoundAuctionException(exceptionMessage));
+		NotFoundAuctionException exception = assertThrows(NotFoundAuctionException.class,
 			() -> auctionService.modifyAuction(null, fakeAuctionId, dto));
 		// then
 		assertEquals(exceptionMessage, exception.getMessage());
@@ -153,8 +153,8 @@ class AuctionServiceTest extends DummyObject {
 		// given
 		String exceptionMessage = "session이 null입니다";
 		// when
-		given(userService.getUserById(null)).willThrow(new NotFoundException(exceptionMessage));
-		NotFoundException exception = assertThrows(NotFoundException.class,
+		given(userService.getUserById(null)).willThrow(new NotFoundAuctionException(exceptionMessage));
+		NotFoundAuctionException exception = assertThrows(NotFoundAuctionException.class,
 			() -> auctionService.deleteAuction(null, fakeAuctionId));
 		// then
 		assertEquals(exceptionMessage, exception.getMessage());

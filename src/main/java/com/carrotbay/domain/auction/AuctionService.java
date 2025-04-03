@@ -5,9 +5,9 @@ import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 
-import com.carrotbay.common.exception.NotFoundException;
 import com.carrotbay.domain.auction.dto.AuctionRequestDto;
 import com.carrotbay.domain.auction.dto.AuctionResponseDto;
+import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
@@ -79,11 +79,11 @@ public class AuctionService {
 
 	public Auction getAuctionWithLock(Long id) {
 		return auctionRepository.getAuctionWithLock(id).orElseThrow(
-			() -> new NotFoundException("해당 경매가 존재하지않습니다."));
+			() -> new NotFoundAuctionException("해당 경매가 존재하지않습니다."));
 	}
 
 	public Auction getAuctionById(Long id) {
 		return auctionRepository.findById(id).orElseThrow(
-			() -> new NotFoundException("해당 경매내역이 존재하지않습니다."));
+			() -> new NotFoundAuctionException("해당 경매내역이 존재하지않습니다."));
 	}
 }

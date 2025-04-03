@@ -27,10 +27,10 @@ public class BidController {
 
 	private final BidService bidService;
 
-	@PostMapping("/{auction_id}")
-	public ResponseEntity<?> postBid(@PathVariable(name = "auction_id") Long auctionId, @LoginUser Long userId,
-		@RequestBody @Valid BidRequestDto.CreateBidDto dto, BindingResult bindingResult) {
-		Long result = bidService.postBid(userId, auctionId, dto);
+	@PostMapping("")
+	public ResponseEntity<?> postBid(@LoginUser Long userId, @RequestBody @Valid BidRequestDto.CreateBidDto dto,
+		BindingResult bindingResult) {
+		Long result = bidService.postBid(userId, dto);
 		return new ResponseEntity<>(result, HttpStatus.CREATED);
 	}
 
