@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.assertj.core.api.Assertions;
@@ -20,7 +19,6 @@ import com.carrotbay.domain.auction.AuctionService;
 import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.bid.dto.BidRequestDto;
-import com.carrotbay.domain.bid.dto.BidResponseDto;
 import com.carrotbay.domain.bid.repository.BidRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
@@ -65,9 +63,7 @@ class BidServiceTest extends DummyObject {
 		User user = newMockUser(userId, "test");
 		Auction auction = newMockAuction(auctionId, user);
 		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(10, auction.getId());
-		BidResponseDto.BidDetailDto responseDto = new BidResponseDto.BidDetailDto(1L, 100, LocalDateTime.now(),
-			auction.getId(),
-			user.getId());
+		Bid responseDto = newBid(bidId, user, auction);
 
 		when(userService.getUserById(any())).thenReturn(user);
 		when(auctionService.getAuctionWithLock(any())).thenReturn(auction);
@@ -87,9 +83,7 @@ class BidServiceTest extends DummyObject {
 		Auction auction = newMockAuction(auctionId, user);
 		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(1000, auction.getId());
 		Bid bid = newBid(bidId, user, auction);
-		BidResponseDto.BidDetailDto responseDto = new BidResponseDto.BidDetailDto(1L, 10, LocalDateTime.now(),
-			auction.getId(),
-			user.getId());
+		Bid responseDto = newBid(bidId, user, auction);
 
 		when(userService.getUserById(any())).thenReturn(user);
 		when(auctionService.getAuctionWithLock(any())).thenReturn(auction);

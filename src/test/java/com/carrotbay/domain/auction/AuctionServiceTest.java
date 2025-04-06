@@ -22,6 +22,7 @@ import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
+import com.carrotbay.domain.user.exception.NotFoundUserException;
 import com.carrotbay.dummy.DummyObject;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,10 +45,10 @@ class AuctionServiceTest extends DummyObject {
 	void 경매등록_실패케이스_사용자가_존재하지않는_경우_등록에_실패한다() {
 		// given
 		AuctionRequestDto.CreateAuctionDto dto = new AuctionRequestDto.CreateAuctionDto();
-		given(userService.getUserById(fakeSessionId)).willThrow(new NullPointerException("해당 사용자가 존재하지않습니다."));
+		given(userService.getUserById(fakeSessionId)).willThrow(new NotFoundUserException("해당 사용자가 존재하지않습니다."));
 
 		// when & then
-		assertThrows(NullPointerException.class, () -> auctionService.postAuction(fakeSessionId, dto));
+		assertThrows(NotFoundUserException.class, () -> auctionService.postAuction(fakeSessionId, dto));
 	}
 
 	@Test

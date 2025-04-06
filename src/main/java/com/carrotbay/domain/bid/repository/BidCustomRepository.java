@@ -2,10 +2,10 @@ package com.carrotbay.domain.bid.repository;
 
 import java.util.List;
 
-import com.carrotbay.domain.bid.dto.BidResponseDto;
+import com.carrotbay.domain.bid.Bid;
 
 public interface BidCustomRepository {
-	BidResponseDto.BidDetailDto findHighestBidByAuctionId(Long auctionId);
+	Bid findHighestBidByAuctionId(Long auctionId);
 
-	List<BidResponseDto.BidListResponseDto> findBidListByAuctionId(Long auctionId);
+	List<Bid> findBidListByAuctionId(Long auctionId);
 }

@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.bid.dto.BidRequestDto;
-import com.carrotbay.domain.bid.dto.BidResponseDto;
 import com.carrotbay.domain.bid.repository.BidRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.repository.UserRepository;
@@ -77,9 +76,9 @@ class BidPessimisticLockTest extends DummyObject {
 
 		countDownLatch.await();
 		// then
-		BidResponseDto.BidDetailDto highestBid = bidRepository.findHighestBidByAuctionId(auction.getId());
+		Bid highestBid = bidRepository.findHighestBidByAuctionId(auction.getId());
 		assertThat(highestBid).isNotNull();
 		assertThat(highestBid.getBidPrice()).isEqualTo(400);
-		assertThat(highestBid.getUserId()).isEqualTo(user.getId());
+		assertThat(highestBid.getUser().getId()).isEqualTo(user.getId());
 	}
 }

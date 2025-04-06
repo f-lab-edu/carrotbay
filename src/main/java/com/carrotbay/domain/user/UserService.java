@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.carrotbay.domain.user.dto.UserRequestDto;
 import com.carrotbay.domain.user.dto.UserResponseDto;
+import com.carrotbay.domain.user.exception.NotFoundUserException;
 import com.carrotbay.domain.user.repository.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -38,7 +39,7 @@ public class UserService {
 			throw new IllegalArgumentException("이미 로그인 상태입니다.");
 		}
 		User loginUser = userRepository.findByUsername(loginRequestDto.getUsername())
-			.orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지않습니다."));
+			.orElseThrow(() -> new NotFoundUserException("해당 사용자가 존재하지않습니다."));
 		if (BCrypt.checkpw(loginRequestDto.getPassword(), loginUser.getPassword())) {
 			return loginUser.getId();
 		} else {
@@ -56,7 +57,7 @@ public class UserService {
 
 	public User getUserById(Long id) {
 		return userRepository.findById(id).orElseThrow(
-			() -> new NullPointerException("해당 사용자가 존재하지않습니다.")
+			() -> new NotFoundUserException("해당 사용자가 존재하지않습니다.")
 		);
 	}
 }

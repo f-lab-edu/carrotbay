@@ -69,7 +69,7 @@ public class Auction {
 	private LocalDateTime createdAt;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user", nullable = false)
 	private User user;
 
 	@Column(name = "created_by", nullable = false)

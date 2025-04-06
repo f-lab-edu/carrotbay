@@ -46,7 +46,7 @@ public class Bid {
 	private boolean isDeleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user", nullable = false)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY) // JPA에서 두 엔티티 간 1:1 관계를 설정하면서, 관련 엔티티를 필요할 때만 불러오도록 지시하는 어노테이션
