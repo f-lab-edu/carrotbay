@@ -6,6 +6,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionStatus;
+import com.carrotbay.domain.bid.Bid;
+import com.carrotbay.domain.bid.BidStatus;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserStatus;
 
@@ -14,7 +16,6 @@ public class DummyObject {
 	protected User newUser(String nickname) {
 		String hashed = BCrypt.hashpw("test1234T@", BCrypt.gensalt());
 		return User.builder()
-			.id(1L)
 			.username(nickname + "@naver.com")
 			.password(hashed)
 			.nickname(nickname)
@@ -47,7 +48,52 @@ public class DummyObject {
 			.instantPrice(10)
 			.isDelete(false)
 			.createdAt(LocalDateTime.now())
-			.createdBy(user)
+			.endDate(LocalDateTime.now().plusMonths(1))
+			.createdBy(user.getId())
+			.user(user)
+			.build();
+	}
+
+	protected Auction newMockExpiredAuction(Long id, User user) {
+		return Auction.builder()
+			.id(id)
+			.title("test")
+			.content("test content")
+			.status(AuctionStatus.AUCTION)
+			.minimumPrice(10)
+			.instantPrice(10)
+			.isDelete(false)
+			.createdAt(LocalDateTime.now().minusDays(1))
+			.endDate(LocalDateTime.now().minusDays(1))
+			.createdBy(user.getId())
+			.user(user)
+			.build();
+	}
+
+	protected Auction newAuction(User user) {
+		return Auction.builder()
+			.title("test")
+			.content("test content")
+			.status(AuctionStatus.AUCTION)
+			.endDate(LocalDateTime.now().plusMonths(1))
+			.minimumPrice(10)
+			.instantPrice(10)
+			.isDelete(false)
+			.createdAt(LocalDateTime.now())
+			.user(user)
+			.createdBy(user.getId())
+			.build();
+	}
+
+	protected Bid newBid(Long id, User user, Auction auction) {
+		return Bid.builder()
+			.id(id)
+			.auction(auction)
+			.bidPrice(1000)
+			.createdAt(LocalDateTime.now())
+			.status(BidStatus.BID)
+			.user(user)
+			.createdBy(user.getId())
 			.build();
 	}
 }

@@ -14,7 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpSession;
 
-import com.carrotbay.domain.user.dto.UserDto;
+import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
+import com.carrotbay.domain.user.dto.UserRequestDto;
+import com.carrotbay.domain.user.dto.UserResponseDto;
 import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
 
@@ -31,16 +33,16 @@ class UserServiceTest extends DummyObject {
 		// 테스트에 이름을 지정하여 가독성을 높이고 테스트 실행결과에 커스텀 설명을 제공.
 	void DTO가_null인_경우_회원가입_실패() {
 		// given
-		UserDto.RegisterUserDto registerUserDto = null;
+		UserRequestDto.RegisterUserDto registerUserDto = null;
 		//when & then
-		assertThrows(NullPointerException.class, () -> userService.registerUser(registerUserDto));
+		assertThrows(NotFoundAuctionException.class, () -> userService.registerUser(registerUserDto));
 	}
 
 	@Test
 	@DisplayName("동일한 닉네임 존재하면 회원가입에 실패한다.")
 	void 닉네임_중복_실패_케이스() {
 		// given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 		User user = newMockUser(1L, "test");
 		when(userRepository.findByNickname(any())).thenReturn(Optional.ofNullable(user));
@@ -55,7 +57,7 @@ class UserServiceTest extends DummyObject {
 	@DisplayName("동일한 회원이 존재하면 회원가입에 실패한다.")
 	void 동일한_회원_존재시_실패_케이스() {
 		// given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 		User user = newMockUser(1L, "test");
 		when(userRepository.findByNickname(any())).thenReturn(Optional.empty());
@@ -72,7 +74,7 @@ class UserServiceTest extends DummyObject {
 	void 회원가입_성공케이스() {
 
 		// given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 
 		when(userRepository.findByUsername(any())).thenReturn(Optional.empty());
@@ -80,7 +82,7 @@ class UserServiceTest extends DummyObject {
 		when(userRepository.save(any())).thenReturn(user);
 
 		//when
-		UserDto.RegisterUserResponseDto joinResponseDto = userService.registerUser(registerUserDto);
+		UserResponseDto.RegisterDto joinResponseDto = userService.registerUser(registerUserDto);
 
 		// then
 		org.assertj.core.api.Assertions.assertThat(joinResponseDto.getId()).isEqualTo(1L);
@@ -92,7 +94,7 @@ class UserServiceTest extends DummyObject {
 	@DisplayName("로그인 성공케이스")
 	void 로그인_성공케이스() {
 		// given
-		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		UserRequestDto.LoginRequestDto loginRequestDto = new UserRequestDto.LoginRequestDto();
 		loginRequestDto.setUsername("test@naver.com");
 		loginRequestDto.setPassword("test1234T@");
 
@@ -111,7 +113,7 @@ class UserServiceTest extends DummyObject {
 	@DisplayName("회원이 존재하지않으면 로그인은 실패한다.")
 	void 로그인_실패케이스() {
 		// given
-		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		UserRequestDto.LoginRequestDto loginRequestDto = new UserRequestDto.LoginRequestDto();
 		loginRequestDto.setUsername("test@naver.com");
 		loginRequestDto.setPassword("test123@");
 
@@ -119,7 +121,7 @@ class UserServiceTest extends DummyObject {
 
 		MockHttpSession session = null;
 		//when & then
-		NullPointerException exception = assertThrows(NullPointerException.class,
+		NotFoundAuctionException exception = assertThrows(NotFoundAuctionException.class,
 			() -> userService.login(session, loginRequestDto));
 		assertEquals("해당 사용자가 존재하지않습니다.", exception.getMessage());
 	}
@@ -128,7 +130,7 @@ class UserServiceTest extends DummyObject {
 	@DisplayName("비밀번호가 일치하지않으면 로그인은 실패한다.")
 	void 로그인_실패케이스2() {
 		// given
-		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		UserRequestDto.LoginRequestDto loginRequestDto = new UserRequestDto.LoginRequestDto();
 		loginRequestDto.setUsername("test@naver.com");
 		loginRequestDto.setPassword("test1234Q@");
 

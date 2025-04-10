@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.carrotbay.domain.user.dto.UserDto;
+import com.carrotbay.domain.user.dto.UserRequestDto;
+import com.carrotbay.domain.user.dto.UserResponseDto;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -29,20 +30,20 @@ public class UserController {
 	public ResponseEntity<?> register(
 		@RequestBody // HTTP 요청 본문에 포함된 데이터를 Java 객체로 변환하여 메소드 파라미터로 전달하는 어노테이션
 		@Valid // 객체나 메소드 파라미터에 대해 유효성 검사를 수행하도록 하며, 검증 실패 시 예외를 발생시키는 어노테이션
-		UserDto.RegisterUserDto registerUserDto, BindingResult bindingResult) {
-		UserDto.RegisterUserResponseDto userResponseDto = userService.registerUser(registerUserDto);
+		UserRequestDto.RegisterUserDto registerUserDto, BindingResult bindingResult) {
+		UserResponseDto.RegisterDto userResponseDto = userService.registerUser(registerUserDto);
 		return new ResponseEntity<>(userResponseDto, HttpStatus.CREATED);
 	}
 
 	@PutMapping("/check")
-	public ResponseEntity<?> checkNickname(@RequestBody @Valid UserDto.NicknameDto nicknameDto,
+	public ResponseEntity<?> checkNickname(@RequestBody @Valid UserRequestDto.NicknameDto nicknameDto,
 		BindingResult bindingResult) {
 		boolean result = userService.checkNickname(nicknameDto);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> login(@RequestBody @Valid UserDto.LoginRequestDto loginRequestDto,
+	public ResponseEntity<?> login(@RequestBody @Valid UserRequestDto.LoginRequestDto loginRequestDto,
 		BindingResult bindingResult, HttpServletRequest httpServletRequest) {
 		Long userId = userService.login(httpServletRequest.getSession(false), loginRequestDto);
 		if (userId == null) {
