@@ -21,6 +21,7 @@ public class BidCustomRepositoryImpl implements BidCustomRepository {
 	public Bid findHighestBidByAuctionId(Long auctionId) {
 		return query.select(bid)
 			.from(bid)
+			.leftJoin(bid.auction).fetchJoin()
 			.where(bid.auction.id.eq(auctionId).and(bid.isDeleted.eq(false)))
 			.orderBy(bid.bidPrice.desc())
 			.fetchFirst();
@@ -30,6 +31,7 @@ public class BidCustomRepositoryImpl implements BidCustomRepository {
 	public List<Bid> findBidListByAuctionId(Long auctionId) {
 		return query.select(bid)
 			.from(bid)
+			.leftJoin(bid.auction).fetchJoin()
 			.where(bid.auction.id.eq(auctionId).and(bid.isDeleted.eq(false)))
 			.orderBy(bid.bidPrice.desc())
 			.fetch();
