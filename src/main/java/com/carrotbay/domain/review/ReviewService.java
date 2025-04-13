@@ -11,11 +11,11 @@ import com.carrotbay.domain.auction.AuctionService;
 import com.carrotbay.domain.review.dto.ReviewRequestDto;
 import com.carrotbay.domain.review.dto.ReviewResponseDto;
 import com.carrotbay.domain.review.dto.ReviewResponseDto.ListResponseDto;
-import com.carrotbay.domain.review.exception.AuthorMismatchException;
 import com.carrotbay.domain.review.exception.NotFoundReviewException;
 import com.carrotbay.domain.review.repository.ReviewRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
+import com.carrotbay.domain.user.exception.UserMismatchException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +31,7 @@ public class ReviewService {
 	public ReviewResponseDto.PostResponseDto postReview(Long userId, ReviewRequestDto.CreateReviewDto postDto) {
 		User user = userService.getUserById(userId);
 		Auction auction = auctionService.getAuctionById(postDto.getAuctionId());
-		auction.validateClosableForReview("완료된 경매에만 후기를 등록할 수 있습니다.");
+		auction.validateReviewable();
 		Review review = reviewRepository.save(postDto.toEntity(user, auction));
 		return new ReviewResponseDto.PostResponseDto(review.getId());
 	}
@@ -69,7 +69,7 @@ public class ReviewService {
 			() -> new NotFoundReviewException("해당하는 후기가 없습니다."));
 
 		if (!user.getId().equals(review.getUser().getId())) {
-			throw new AuthorMismatchException("작성자와 일치하지않습니다.");
+			throw new UserMismatchException("작성자와 일치하지않습니다.");
 		}
 		return review;
 	}
