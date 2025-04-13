@@ -44,7 +44,7 @@ public class Review {
 	private boolean isDeleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "user_id", nullable = false)
+	@JoinColumn(name = "user", nullable = false)
 	private User user;
 
 	@ManyToOne(fetch = FetchType.LAZY)
