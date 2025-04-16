@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import com.carrotbay.domain.auction.exception.AuctionNotClosedException;
 import com.carrotbay.domain.user.User;
 
 import jakarta.persistence.Column;
@@ -125,5 +126,11 @@ public class Auction {
 	public void delete() {
 		this.isDelete = true;
 		this.status = AuctionStatus.CANCEL;
+	}
+
+	public void validateReviewable() {
+		if (this.status != AuctionStatus.CLOSE) {
+			throw new AuctionNotClosedException("해당 리뷰는 완료 상태가 아닙니다");
+		}
 	}
 }

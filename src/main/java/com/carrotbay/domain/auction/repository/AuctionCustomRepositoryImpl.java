@@ -1,7 +1,6 @@
 package com.carrotbay.domain.auction.repository;
 
 import static com.carrotbay.domain.auction.QAuction.*;
-import static com.carrotbay.domain.user.QUser.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +34,7 @@ public class AuctionCustomRepositoryImpl implements AuctionCustomRepository {
 					auction.user.id,
 					auction.user.nickname))
 			.from(auction)
-			.leftJoin(user).on(user.id.eq(auction.user.id))
+			.leftJoin(auction.user).fetchJoin()
 			.fetch();
 	}
 

@@ -61,7 +61,7 @@ public class AuctionService {
 		auction.delete();
 		auctionRepository.save(auction);
 		return AuctionResponseDto.DeleteResponseDto.builder()
-			.isDeleted(true)
+			.isDeleted(auction.isDelete())
 			.build();
 	}
 

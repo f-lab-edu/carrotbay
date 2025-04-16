@@ -8,6 +8,7 @@ import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionStatus;
 import com.carrotbay.domain.bid.Bid;
 import com.carrotbay.domain.bid.BidStatus;
+import com.carrotbay.domain.review.Review;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserStatus;
 
@@ -93,6 +94,17 @@ public class DummyObject {
 			.createdAt(LocalDateTime.now())
 			.status(BidStatus.BID)
 			.user(user)
+			.createdBy(user.getId())
+			.build();
+	}
+
+	protected Review newReview(Long id, User user, Auction auction) {
+		return Review.builder()
+			.id(id)
+			.title("test title")
+			.content("test content")
+			.user(user)
+			.auction(auction)
 			.createdBy(user.getId())
 			.build();
 	}
