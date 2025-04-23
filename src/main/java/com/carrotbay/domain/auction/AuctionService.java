@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.carrotbay.common.handler.annotation.LogUpdateHistory;
 import com.carrotbay.domain.auction.dto.AuctionRequestDto;
 import com.carrotbay.domain.auction.dto.AuctionResponseDto;
 import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
@@ -21,6 +23,7 @@ public class AuctionService {
 	private final AuctionRepository auctionRepository;
 	private final UserService userService;
 
+	@Transactional
 	public AuctionResponseDto.PostResponseDto postAuction(Long userId,
 		AuctionRequestDto.CreateAuctionDto postDto) {
 		User user = userService.getUserById(userId);
@@ -30,6 +33,8 @@ public class AuctionService {
 			.build();
 	}
 
+	@Transactional
+	@LogUpdateHistory
 	public AuctionResponseDto.ModifyResponseDto modifyAuction(Long userId, Long auctionId,
 		AuctionRequestDto.ModifyAuctionDto modifyDto) {
 
@@ -55,6 +60,7 @@ public class AuctionService {
 			.build();
 	}
 
+	@Transactional
 	public AuctionResponseDto.DeleteResponseDto deleteAuction(Long userId, Long auctionId) {
 		User user = userService.getUserById(userId);
 		Auction auction = validateAuctionOwner(user.getId(), auctionId);

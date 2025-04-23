@@ -41,21 +41,16 @@ public class History {
 	@Column(name = "entity_id", nullable = false)
 	private Long entityId;
 
-	@Column(name = "created_by", nullable = false)
-	private Long createdBy;
-
 	@CreatedDate
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
 
 	@Builder
-	public History(String tableName, String operation, String beforeValue, String afterValue, Long entityId,
-		Long createdBy) {
+	public History(String tableName, String operation, String beforeValue, String afterValue, Long entityId) {
 		this.tableName = tableName;
 		this.operation = operation;
 		this.beforeValue = beforeValue;
 		this.afterValue = afterValue;
 		this.entityId = entityId;
-		this.createdBy = createdBy;
 	}
 }

@@ -27,7 +27,7 @@ import com.carrotbay.domain.auction.AuctionService;
 import com.carrotbay.domain.auction.dto.AuctionRequestDto;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.history.HistoryService;
-import com.carrotbay.domain.history.dto.HistoryRequestDto;
+import com.carrotbay.domain.history.event.HistoryLoggingEvent;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
@@ -91,7 +91,7 @@ class HistoryLoggingIntegrationTest extends DummyObject {
 		session.setAttribute("USER_ID", user.getId());
 
 		doReturn(null).when(auctionService).modifyAuction(any(), any(), any());
-		doNothing().when(historyService).saveHistory(any(HistoryRequestDto.CreateHistoryDto.class));
+		doNothing().when(historyService).saveHistory(any(HistoryLoggingEvent.class));
 
 		// when
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/auctions/" + auction.getId())
@@ -101,11 +101,10 @@ class HistoryLoggingIntegrationTest extends DummyObject {
 			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 
 		// then
-		ArgumentCaptor<HistoryRequestDto.CreateHistoryDto> captor = ArgumentCaptor.forClass(
-			HistoryRequestDto.CreateHistoryDto.class);
+		ArgumentCaptor<HistoryLoggingEvent> captor = ArgumentCaptor.forClass(HistoryLoggingEvent.class);
 		verify(historyService, times(1)).saveHistory(captor.capture());
 		verify(historyService).saveHistory(captor.capture());
-		HistoryRequestDto.CreateHistoryDto history = captor.getValue();
+		HistoryLoggingEvent history = captor.getValue();
 		assertEquals(auction.getId(), history.getEntityId());
 		assertEquals("Auction", history.getTableName());
 		assertEquals("update", history.getOperation());
