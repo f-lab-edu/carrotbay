@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.carrotbay.common.handler.annotation.LogUpdateHistory;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionService;
 import com.carrotbay.domain.review.dto.ReviewRequestDto;
@@ -36,6 +37,7 @@ public class ReviewService {
 		return new ReviewResponseDto.PostResponseDto(review.getId());
 	}
 
+	@LogUpdateHistory
 	@Transactional
 	public ReviewResponseDto.ModifyResponseDto modifyReview(Long userId, Long reviewId,
 		ReviewRequestDto.ModifyReviewDto modifyDto) {
