@@ -57,7 +57,8 @@ public class UserController {
 
 	@PutMapping("/logout")
 	public ResponseEntity<?> logout(HttpSession httpSession) {
-		httpSession.removeAttribute(SESSION_KEY);
-		return new ResponseEntity<>(null, HttpStatus.OK);
+		httpSession.invalidate();
+		return new ResponseEntity<>("success", HttpStatus.OK);
 	}
+
 }
