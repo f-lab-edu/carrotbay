@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -24,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Transactional // 메서드나 클래스에 적용하여, 데이터베이스 작업이 트랜잭션으로 관리되도록 설정하며, 기본적으로 롤백 처리된다.(테스트에서 주로 사용).
 @AutoConfigureMockMvc //Spring Boot 테스트 환경에서 MockMvc를 자동으로 구성하여 컨트롤러 테스트를 지원하는 어노테이션.
 @SpringBootTest//Spring Boot 애플리케이션 테스트 컨텍스트를 생성하며, 내장 웹 서버 없이(Mock 환경) 테스트를 실행.
+@TestPropertySource(properties = "spring.redis.enabled=false") //  특정 프로퍼티 값을 설정하여 테스트에 영향을 미치도록 하는 어노테이션, redis를 비 활성화 한다.
 class UserControllerTest {
 	@Autowired //Spring 컨텍스트에서 관리되는 빈(Bean)을 자동으로 주입해주는 어노테이션.
 	private MockMvc mvc;

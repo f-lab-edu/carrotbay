@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
@@ -23,6 +24,7 @@ import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
 
 @SpringBootTest
+@TestPropertySource(properties = "spring.redis.enabled=false")
 class BidPessimisticLockTest extends DummyObject {
 	@Autowired
 	private BidRepository bidRepository;
