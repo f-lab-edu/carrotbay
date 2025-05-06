@@ -14,9 +14,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockHttpSession;
 
-import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
 import com.carrotbay.domain.user.dto.UserRequestDto;
 import com.carrotbay.domain.user.dto.UserResponseDto;
+import com.carrotbay.domain.user.exception.NotFoundUserException;
 import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
 
@@ -35,7 +35,7 @@ class UserServiceTest extends DummyObject {
 		// given
 		UserRequestDto.RegisterUserDto registerUserDto = null;
 		//when & then
-		assertThrows(NotFoundAuctionException.class, () -> userService.registerUser(registerUserDto));
+		assertThrows(NullPointerException.class, () -> userService.registerUser(registerUserDto));
 	}
 
 	@Test
@@ -121,7 +121,7 @@ class UserServiceTest extends DummyObject {
 
 		MockHttpSession session = null;
 		//when & then
-		NotFoundAuctionException exception = assertThrows(NotFoundAuctionException.class,
+		NotFoundUserException exception = assertThrows(NotFoundUserException.class,
 			() -> userService.login(session, loginRequestDto));
 		assertEquals("해당 사용자가 존재하지않습니다.", exception.getMessage());
 	}
