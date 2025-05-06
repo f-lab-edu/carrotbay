@@ -34,8 +34,6 @@ build/*
 ### application profile ###
 **/application-local.properties
 bin/
-application.properties
-applicatoin.*
 
 /build/**
 build
