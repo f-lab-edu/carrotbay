@@ -5,7 +5,9 @@ import java.util.Optional;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
-import com.carrotbay.domain.user.dto.UserDto;
+import com.carrotbay.domain.user.dto.UserRequestDto;
+import com.carrotbay.domain.user.dto.UserResponseDto;
+import com.carrotbay.domain.user.exception.NotFoundUserException;
 import com.carrotbay.domain.user.repository.UserRepository;
 
 import jakarta.servlet.http.HttpSession;
@@ -17,27 +19,27 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 	private final UserRepository userRepository;
 
-	public UserDto.RegisterUserResponseDto registerUser(UserDto.RegisterUserDto registerUserDto) {
+	public UserResponseDto.RegisterDto registerUser(UserRequestDto.RegisterUserDto registerUserDto) {
 		duplicatedCheckNickname(registerUserDto.getNickname());
 		Optional<User> userOptional = userRepository.findByUsername(registerUserDto.getUsername());
 		if (userOptional.isPresent()) {
 			throw new IllegalArgumentException("해당 사용자가 이미 존재합니다.");
 		}
 		User persistedUser = userRepository.save(registerUserDto.toEntity());
-		return new UserDto.RegisterUserResponseDto(persistedUser);
+		return new UserResponseDto.RegisterDto(persistedUser);
 	}
 
-	public boolean checkNickname(UserDto.NicknameDto nickname) {
+	public boolean checkNickname(UserRequestDto.NicknameDto nickname) {
 		return duplicatedCheckNickname(nickname.getNickname());
 	}
 
-	public Long login(HttpSession session, UserDto.LoginRequestDto loginRequestDto) {
+	public Long login(HttpSession session, UserRequestDto.LoginRequestDto loginRequestDto) {
 		boolean isLoggedIn = session != null;
 		if (isLoggedIn) {
 			throw new IllegalArgumentException("이미 로그인 상태입니다.");
 		}
 		User loginUser = userRepository.findByUsername(loginRequestDto.getUsername())
-			.orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지않습니다."));
+			.orElseThrow(() -> new NotFoundUserException("해당 사용자가 존재하지않습니다."));
 		if (BCrypt.checkpw(loginRequestDto.getPassword(), loginUser.getPassword())) {
 			return loginUser.getId();
 		} else {
@@ -54,7 +56,8 @@ public class UserService {
 	}
 
 	public User getUserById(Long id) {
-		return userRepository.findById(id)
-			.orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지않습니다."));
+		return userRepository.findById(id).orElseThrow(
+			() -> new NotFoundUserException("해당 사용자가 존재하지않습니다.")
+		);
 	}
 }

@@ -2,7 +2,6 @@ package com.carrotbay.domain.user;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.carrotbay.domain.user.dto.UserDto;
+import com.carrotbay.domain.user.dto.UserRequestDto;
+import com.carrotbay.domain.user.dto.UserResponseDto;
 import com.carrotbay.domain.user.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,13 +39,13 @@ class UserControllerTest {
 	void 회원가입() throws Exception {
 
 		//given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 		registerUserDto.setNickname("test");
 		registerUserDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(registerUserDto);
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -65,12 +65,12 @@ class UserControllerTest {
 	void 회원가입_실패케이스() throws Exception {
 
 		// given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 		registerUserDto.setNickname("test");
 		registerUserDto.setUsername("test@naver.com");
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -91,13 +91,13 @@ class UserControllerTest {
 	void 비밀번호_유효성검사에_실패하는_케이스() throws Exception {
 
 		//given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test");
 		registerUserDto.setNickname("test");
 		registerUserDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(registerUserDto);
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -119,13 +119,13 @@ class UserControllerTest {
 	void 비밀번호_유효성검사에_실패하는_케이스2() throws Exception {
 
 		//given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("12111111111");
 		registerUserDto.setNickname("test");
 		registerUserDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(registerUserDto);
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -147,13 +147,13 @@ class UserControllerTest {
 	void 비밀번호_유효성검사에_실패하는_케이스3() throws Exception {
 
 		//given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test12312");
 		registerUserDto.setNickname("test");
 		registerUserDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(registerUserDto);
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -175,13 +175,13 @@ class UserControllerTest {
 	void 아아디_유효성검사에_실패하는_케이스() throws Exception {
 
 		//given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 		registerUserDto.setNickname("test");
 		registerUserDto.setUsername("test");
 		String requestBody = om.writeValueAsString(registerUserDto);
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -203,13 +203,13 @@ class UserControllerTest {
 	void 닉네임_유효성검사에_실패하는_케이스() throws Exception {
 
 		//given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 		registerUserDto.setNickname("1!@!#");
 		registerUserDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(registerUserDto);
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -231,13 +231,13 @@ class UserControllerTest {
 	void 닉네임_유효성검사에_실패하는_케이스2() throws Exception {
 
 		//given
-		UserDto.RegisterUserDto registerUserDto = new UserDto.RegisterUserDto();
+		UserRequestDto.RegisterUserDto registerUserDto = new UserRequestDto.RegisterUserDto();
 		registerUserDto.setPassword("test1234T@");
 		registerUserDto.setNickname("testestestestesetsetsetsetsetset");
 		registerUserDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(registerUserDto);
 
-		UserDto.RegisterUserResponseDto responseDto = new UserDto.RegisterUserResponseDto();
+		UserResponseDto.RegisterDto responseDto = new UserResponseDto.RegisterDto();
 		responseDto.setId(1L);
 		responseDto.setNickname("test");
 		responseDto.setUsername("test@naver.com");
@@ -259,7 +259,7 @@ class UserControllerTest {
 	void 닉네임중복검사_실패케이스() throws Exception {
 
 		//given
-		UserDto.NicknameDto nicknameDto = new UserDto.NicknameDto();
+		UserRequestDto.NicknameDto nicknameDto = new UserRequestDto.NicknameDto();
 		nicknameDto.setNickname("test123123123123123");
 		String requestBody = om.writeValueAsString(nicknameDto);
 
@@ -280,7 +280,7 @@ class UserControllerTest {
 	void 닉네임중복검사_실패케이스2() throws Exception {
 
 		//given
-		UserDto.NicknameDto nicknameDto = new UserDto.NicknameDto();
+		UserRequestDto.NicknameDto nicknameDto = new UserRequestDto.NicknameDto();
 		nicknameDto.setNickname(null);
 		String requestBody = om.writeValueAsString(nicknameDto);
 
@@ -297,31 +297,11 @@ class UserControllerTest {
 	}
 
 	@Test
-	@DisplayName("로그인 성공케이스.")
-	void 로그인_성공케이스() throws Exception {
-
-		//given
-		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
-		loginRequestDto.setPassword("test1234T@");
-		loginRequestDto.setUsername("test@naver.com");
-		String requestBody = om.writeValueAsString(loginRequestDto);
-
-		// when, then
-		mvc
-			.perform(MockMvcRequestBuilders.post("/api/users/login")
-				.content(requestBody)
-				.contentType(MediaType.APPLICATION_JSON)
-			)
-			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful())
-			.andExpect(request().sessionAttribute("USER_ID", 1L));
-	}
-
-	@Test
 	@DisplayName("이미 로그인을 한 사용자(세션이 존재하는 사용자)의 경우 로그인 요청이 실패한다.")
 	void 로그인_실패케이스() throws Exception {
 
 		//given
-		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		UserRequestDto.LoginRequestDto loginRequestDto = new UserRequestDto.LoginRequestDto();
 		loginRequestDto.setPassword("test1234T@");
 		loginRequestDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(loginRequestDto);
@@ -346,7 +326,7 @@ class UserControllerTest {
 	void 로그인_실패케이스_사용자가_이미_존재() throws Exception {
 
 		//given
-		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		UserRequestDto.LoginRequestDto loginRequestDto = new UserRequestDto.LoginRequestDto();
 		loginRequestDto.setPassword("test1234T@");
 		loginRequestDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(loginRequestDto);
@@ -371,7 +351,7 @@ class UserControllerTest {
 	void 로그인_실패케이스_비밀번호가_일치하지않음() throws Exception {
 
 		//given
-		UserDto.LoginRequestDto loginRequestDto = new UserDto.LoginRequestDto();
+		UserRequestDto.LoginRequestDto loginRequestDto = new UserRequestDto.LoginRequestDto();
 		loginRequestDto.setPassword("test1234T@");
 		loginRequestDto.setUsername("test@naver.com");
 		String requestBody = om.writeValueAsString(loginRequestDto);

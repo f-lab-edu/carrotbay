@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionStatus;
 import com.carrotbay.domain.user.User;
-import com.querydsl.core.annotations.QueryProjection;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -16,7 +15,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-public class AuctionDto {
+public class AuctionRequestDto {
 
 	@Getter
 	@Builder
@@ -39,7 +38,7 @@ public class AuctionDto {
 		@Min(value = 1, message = "즉시 낙찰 가격은 0원이 될 수 없습니다.")
 		private int instantPrice;
 
-		public Auction toEntity(User createdBy) {
+		public Auction toEntity(User user) {
 			return Auction.builder()
 				.title(this.title)
 				.content(this.content)
@@ -47,7 +46,8 @@ public class AuctionDto {
 				.endDate(this.endDate)
 				.minimumPrice(this.minimumPrice)
 				.instantPrice(this.instantPrice)
-				.createdBy(createdBy)
+				.user(user)
+				.createdBy(user.getId())
 				.build();
 		}
 	}
@@ -72,78 +72,5 @@ public class AuctionDto {
 
 		@Min(value = 1, message = "즉시 낙찰 가격은 0원이 될 수 없습니다.")
 		private int instantPrice;
-
-		public Auction toEntity(User createdBy) {
-			return Auction.builder()
-				.title(this.title)
-				.content(this.content)
-				.status(AuctionStatus.AUCTION)
-				.endDate(this.endDate)
-				.minimumPrice(this.minimumPrice)
-				.instantPrice(this.instantPrice)
-				.createdBy(createdBy)
-				.build();
-		}
-	}
-
-	@Getter
-	@Builder
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class ModifyAuctionResponseDto {
-		private Long id;
-		private String title;
-		private String content;
-		private String status;
-		private LocalDateTime startDate;
-		private LocalDateTime endDate;
-		private int minimumPrice;
-		private int instantPrice;
-		private Long successfulBidderId;
-		private Long createdBy;
-		private String creator;
-	}
-
-	@Getter
-	@NoArgsConstructor
-	public static class AuctionResponseDto {
-		private Long id;
-		private String title;
-		private String content;
-		private String status;
-		private LocalDateTime startDate;
-		private LocalDateTime endDate;
-		private Long createdBy;
-		private String creator;
-
-		@Builder
-		@QueryProjection
-		public AuctionResponseDto(Long id, String title, String content, AuctionStatus status, LocalDateTime startDate,
-			LocalDateTime endDate, Long createdBy, String creator) {
-			this.id = id;
-			this.title = title;
-			this.content = content;
-			this.status = status.getStatus();
-			this.startDate = startDate;
-			this.endDate = endDate;
-			this.createdBy = createdBy;
-			this.creator = creator;
-		}
-	}
-
-	@Getter
-	@Builder
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class PostAuctionResponseDto {
-		private Long id;
-	}
-
-	@Getter
-	@Builder
-	@AllArgsConstructor
-	@NoArgsConstructor
-	public static class DeleteAuctionResponseDto {
-		private boolean isDeleted;
 	}
 }

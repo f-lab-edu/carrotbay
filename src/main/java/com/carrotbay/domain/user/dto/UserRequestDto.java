@@ -8,10 +8,9 @@ import com.carrotbay.domain.user.UserStatus;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-public class UserDto {
+public class UserRequestDto {
 
 	@Getter // 해당 클래스의 모든 필드에 대해 자동으로 getter 메서드를 생성
 	@Setter // 해당 클래스의 모든 필드에 대해 자동으로 setter 메서드를 생성.
@@ -40,21 +39,6 @@ public class UserDto {
 				.imageUrl(this.imageUrl)
 				.status(UserStatus.ACTIVE)
 				.build();
-		}
-	}
-
-	@NoArgsConstructor
-	@Getter
-	@Setter
-	public static class RegisterUserResponseDto {
-		private Long id;
-		private String username;
-		private String nickname;
-
-		public RegisterUserResponseDto(User user) {
-			this.id = user.getId();
-			this.nickname = user.getNickname();
-			this.username = user.getUsername();
 		}
 	}
 
