@@ -35,7 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest(properties = "spring.redis.enabled=false")
 @AutoConfigureMockMvc
-class HistoryLoggingIntegrationTest extends DummyObject {
+class HistoryLoggingAdviceTest extends DummyObject {
 
 	@Autowired
 	private MockMvc mockMvc;
