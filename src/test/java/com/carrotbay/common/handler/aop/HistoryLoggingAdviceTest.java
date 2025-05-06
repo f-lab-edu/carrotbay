@@ -16,7 +16,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -34,8 +33,7 @@ import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest
-@TestPropertySource(properties = "spring.redis.enabled=false")
+@SpringBootTest(properties = "spring.redis.enabled=false")
 @AutoConfigureMockMvc
 class HistoryLoggingIntegrationTest extends DummyObject {
 
