@@ -32,10 +32,11 @@ jobs:
         run: ./gradlew assemble
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: build-artifact
           path: build/libs
+
   test:
     name: Run Tests
     runs-on: ubuntu-latest
@@ -63,7 +64,7 @@ jobs:
 
       - name: Upload test report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: test-report
           path: build/reports/tests/test
@@ -105,7 +106,7 @@ jobs:
 
       - name: Upload Security Report
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v3.1.3
         with:
           name: security-report
           path: reports
