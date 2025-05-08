@@ -21,7 +21,7 @@ import com.carrotbay.domain.bid.dto.BidRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @AutoConfigureMockMvc
-@SpringBootTest(properties = "spring.redis.enabled=false")
+@SpringBootTest
 class BidControllerTest {
 	@Autowired
 	private MockMvc mvc;

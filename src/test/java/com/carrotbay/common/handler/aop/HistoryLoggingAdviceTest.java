@@ -33,7 +33,7 @@ import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest(properties = "spring.redis.enabled=false")
+@SpringBootTest
 @AutoConfigureMockMvc
 class HistoryLoggingAdviceTest extends DummyObject {
 

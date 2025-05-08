@@ -23,7 +23,7 @@ import com.carrotbay.domain.review.dto.ReviewResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @AutoConfigureMockMvc
-@SpringBootTest(properties = "spring.redis.enabled=false")
+@SpringBootTest
 public class ReviewControllerTest {
 	@Autowired
 	private MockMvc mvc;

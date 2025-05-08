@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Transactional
 @AutoConfigureMockMvc
-@SpringBootTest(properties = "spring.redis.enabled=false")
+@SpringBootTest
 class AuctionControllerTest {
 	@Autowired
 	private MockMvc mvc;

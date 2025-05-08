@@ -22,7 +22,7 @@ import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
 
-@SpringBootTest(properties = "spring.redis.enabled=false")
+@SpringBootTest
 class BidPessimisticLockTest extends DummyObject {
 	@Autowired
 	private BidRepository bidRepository;
