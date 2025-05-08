@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 jobs:
   build:
     name: Build
@@ -36,12 +37,27 @@ jobs:
         with:
           name: build-artifact
           path: build/libs
+
   test:
     name: Run Tests
     runs-on: ubuntu-latest
     needs: build
 
+    permissions:
+      contents: read
+      packages: read
+
+    services:
+      docker:
+        image: docker:dind
+        options: --privileged
+
     steps:
+      - name: Enable Docker daemon
+        run: |
+          sudo systemctl start docker
+          docker info
+
       - name: Checkout source code
         uses: actions/checkout@v3
 
