@@ -60,6 +60,11 @@ jobs:
           docker version
           docker info
 
+      - name: Set up Redis service for Testcontainers
+        run: |
+          docker run -d --name redis-container -p 6379:6379 redis:7.0.8-alpine
+          docker ps
+
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
