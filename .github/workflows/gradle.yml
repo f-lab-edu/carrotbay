@@ -57,7 +57,7 @@ jobs:
           name: build-artifact
 
       - name: Run tests
-        run: ./gradlew test
+        run: ./gradlew test --info
         env:
           SPRING_PROFILES_ACTIVE: test
 
