@@ -3,25 +3,30 @@ package com.carrotbay.config;
 import org.junit.jupiter.api.DisplayName;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.utility.DockerImageName;
 
 @DisplayName("Redis Test Containers")
 @ActiveProfiles("test")
 @Configuration
 public class RedisTestContainers {
 
-	private static final String REDIS_DOCKER_IMAGE = "redis:5.0.3-alpine";
+	private static final String REDIS_IMAGE = "redis:7.0.8-alpine";
+	private static final int REDIS_PORT = 6379;
+	private static final GenericContainer REDIS_CONTAINER;
 
 	static {
-		GenericContainer<?> REDIS_CONTAINER =
-			new GenericContainer<>(DockerImageName.parse(REDIS_DOCKER_IMAGE))
-				.withExposedPorts(6379)
-				.withReuse(true);
+		REDIS_CONTAINER = new GenericContainer(REDIS_IMAGE)
+			.withExposedPorts(REDIS_PORT)
+			.withReuse(true);
+		REDIS_CONTAINER.start();
+	}
 
-		REDIS_CONTAINER.start();    // (2)
-
-		System.setProperty("spring.redis.host", REDIS_CONTAINER.getHost());
-		System.setProperty("spring.redis.port", REDIS_CONTAINER.getMappedPort(6379).toString());
+	@DynamicPropertySource
+	private static void registerRedisProperties(DynamicPropertyRegistry registry) {
+		registry.add("spring.data.redis.host", REDIS_CONTAINER::getHost);
+		registry.add("spring.data.redis.port", () -> REDIS_CONTAINER.getMappedPort(REDIS_PORT)
+			.toString());
 	}
 }
