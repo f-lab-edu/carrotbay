@@ -11,7 +11,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @DisplayName("Redis Test Containers")
 @ActiveProfiles("test")
-@Testcontainers
+@Testcontainers // Testcontainers 라이브러리를 통해 테스트 환경을 관리하는 어노케이션
 @Configuration
 public class RedisTestContainers {
 
