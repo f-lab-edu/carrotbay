@@ -60,7 +60,7 @@ public class DummyObject {
 			.id(id)
 			.title("test")
 			.content("test content")
-			.status(AuctionStatus.AUCTION)
+			.status(AuctionStatus.CLOSE)
 			.minimumPrice(10)
 			.instantPrice(10)
 			.isDelete(false)

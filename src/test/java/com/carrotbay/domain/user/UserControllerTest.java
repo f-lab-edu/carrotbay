@@ -23,7 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Transactional // 메서드나 클래스에 적용하여, 데이터베이스 작업이 트랜잭션으로 관리되도록 설정하며, 기본적으로 롤백 처리된다.(테스트에서 주로 사용).
 @AutoConfigureMockMvc //Spring Boot 테스트 환경에서 MockMvc를 자동으로 구성하여 컨트롤러 테스트를 지원하는 어노테이션.
-@SpringBootTest//Spring Boot 애플리케이션 테스트 컨텍스트를 생성하며, 내장 웹 서버 없이(Mock 환경) 테스트를 실행.
+@SpringBootTest //Spring Boot 애플리케이션 테스트 컨텍스트를 생성하며, 내장 웹 서버 없이(Mock 환경) 테스트를 실행.
 class UserControllerTest {
 	@Autowired //Spring 컨텍스트에서 관리되는 빈(Bean)을 자동으로 주입해주는 어노테이션.
 	private MockMvc mvc;

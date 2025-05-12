@@ -9,13 +9,13 @@ target/
 .classpath
 .factorypath
 .project
-.settings
+.settings/
 .springBeans
 .sts4-cache
 **/*.log
 
 ### IntelliJ IDEA ###
-.idea
+.idea/
 *.iws
 *.iml
 *.ipr
@@ -26,7 +26,6 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
-build/*
 
 ### VS Code ###
 .vscode/
@@ -34,20 +33,16 @@ build/*
 ### application profile ###
 **/application-local.properties
 bin/
-application.properties
-applicatoin.*
 
-/build/**
-build
+### Gradle ###
+/build/
 build/
-/build
-/out/**
+build
+/out/
 
-.gradle/
+/.gradle/
 .gradle/**
 .gradle/*
-gradle/
-gradle/**
-gradle/*
-*/gradle/
-*/.gralde/
+# ✅ gradle/wrapper/는 포함되도록 예외 설정 추가
+!/gradle/wrapper/gradle-wrapper.jar
+!/gradle/wrapper/gradle-wrapper.properties

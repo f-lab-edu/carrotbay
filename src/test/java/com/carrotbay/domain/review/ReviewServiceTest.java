@@ -16,11 +16,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionService;
+import com.carrotbay.domain.auction.exception.AuctionNotClosedException;
 import com.carrotbay.domain.review.dto.ReviewRequestDto;
 import com.carrotbay.domain.review.dto.ReviewResponseDto;
+import com.carrotbay.domain.review.exception.NotFoundReviewException;
 import com.carrotbay.domain.review.repository.ReviewRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
+import com.carrotbay.domain.user.exception.UserMismatchException;
 import com.carrotbay.dummy.DummyObject;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,10 +54,10 @@ public class ReviewServiceTest extends DummyObject {
 		when(userService.getUserById(any())).thenReturn(user);
 		when(auctionService.getAuctionById(any())).thenReturn(auction);
 		// when & then
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+		AuctionNotClosedException exception = assertThrows(AuctionNotClosedException.class,
 			() -> reviewService.postReview(user.getId(), dto));
 
-		assertEquals("완료된 경매에만 후기를 등록 할 수 있습니다.", exception.getMessage());
+		assertEquals("해당 리뷰는 완료 상태가 아닙니다", exception.getMessage());
 	}
 
 	@Test
@@ -86,7 +89,7 @@ public class ReviewServiceTest extends DummyObject {
 		when(userService.getUserById(any())).thenReturn(user);
 
 		// when & then
-		NullPointerException exception = assertThrows(NullPointerException.class,
+		NotFoundReviewException exception = assertThrows(NotFoundReviewException.class,
 			() -> reviewService.modifyReview(user.getId(), reviewId, dto));
 		assertEquals("해당하는 후기가 없습니다.", exception.getMessage());
 
@@ -105,7 +108,7 @@ public class ReviewServiceTest extends DummyObject {
 		when(reviewRepository.findById(any())).thenReturn(Optional.of(review));
 
 		// when & then
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+		UserMismatchException exception = assertThrows(UserMismatchException.class,
 			() -> reviewService.modifyReview(loginUser.getId(), auction.getId(), dto));
 		assertEquals("작성자와 일치하지않습니다.", exception.getMessage());
 
@@ -115,8 +118,8 @@ public class ReviewServiceTest extends DummyObject {
 	@DisplayName("후기 수정 성공 케이스.")
 	void 후기수정_성공케이스() {
 		// given
-		String title = "title update";
-		String content = "content update";
+		String title = "test title";
+		String content = "test content";
 
 		ReviewRequestDto.ModifyReviewDto request = new ReviewRequestDto.ModifyReviewDto(title, content);
 		User user = newMockUser(userId, "test");

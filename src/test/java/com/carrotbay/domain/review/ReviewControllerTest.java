@@ -45,7 +45,7 @@ public class ReviewControllerTest {
 		String requestBody = om.writeValueAsString(dto);
 
 		// when, then
-		mvc.perform(MockMvcRequestBuilders.post(API + "/" + auctionId)
+		mvc.perform(MockMvcRequestBuilders.post(API)
 				.content(requestBody)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -61,7 +61,7 @@ public class ReviewControllerTest {
 		String requestBody = om.writeValueAsString(dto);
 
 		// when, then
-		mvc.perform(MockMvcRequestBuilders.post(API + "/" + auctionId)
+		mvc.perform(MockMvcRequestBuilders.post(API)
 				.content(requestBody)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -77,7 +77,7 @@ public class ReviewControllerTest {
 		String requestBody = om.writeValueAsString(dto);
 
 		// when, then
-		mvc.perform(MockMvcRequestBuilders.post(API + "/" + auctionId)
+		mvc.perform(MockMvcRequestBuilders.post(API)
 				.content(requestBody)
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(MockMvcResultMatchers.status().is4xxClientError())
@@ -96,7 +96,7 @@ public class ReviewControllerTest {
 		MockHttpSession session = new MockHttpSession();
 		session.setAttribute("USER_ID", userId);
 		// when
-		MvcResult result = mvc.perform(MockMvcRequestBuilders.post(API + "/" + auctionId)
+		MvcResult result = mvc.perform(MockMvcRequestBuilders.post(API)
 				.session(session)
 				.content(requestBody)
 				.contentType(MediaType.APPLICATION_JSON))

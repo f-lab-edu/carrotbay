@@ -16,9 +16,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionService;
-import com.carrotbay.domain.auction.exception.NotFoundAuctionException;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.bid.dto.BidRequestDto;
+import com.carrotbay.domain.bid.exception.NotFoundBidException;
 import com.carrotbay.domain.bid.repository.BidRepository;
 import com.carrotbay.domain.user.User;
 import com.carrotbay.domain.user.UserService;
@@ -81,7 +81,7 @@ class BidServiceTest extends DummyObject {
 		// given
 		User user = newMockUser(userId, "test");
 		Auction auction = newMockAuction(auctionId, user);
-		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(1000, auction.getId());
+		BidRequestDto.CreateBidDto dto = new BidRequestDto.CreateBidDto(10000, auction.getId());
 		Bid bid = newBid(bidId, user, auction);
 		Bid responseDto = newBid(bidId, user, auction);
 
@@ -107,7 +107,7 @@ class BidServiceTest extends DummyObject {
 		when(auctionService.getAuctionById(any())).thenReturn(auction);
 		when(bidRepository.findByIdAndCreatedBy(bidId, user)).thenReturn(Optional.empty());
 		// when
-		NotFoundAuctionException exception = assertThrows(NotFoundAuctionException.class,
+		NotFoundBidException exception = assertThrows(NotFoundBidException.class,
 			() -> bidService.cancelBid(user.getId(), bidId, dto));
 		// then
 		assertEquals("입찰한 내역이 존재하지않습니다.", exception.getMessage());
