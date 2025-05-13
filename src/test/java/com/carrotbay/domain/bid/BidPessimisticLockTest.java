@@ -13,7 +13,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
+import com.carrotbay.config.EmbeddedRedisConfig;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.repository.AuctionRepository;
 import com.carrotbay.domain.bid.dto.BidRequestDto;
@@ -23,6 +25,7 @@ import com.carrotbay.domain.user.repository.UserRepository;
 import com.carrotbay.dummy.DummyObject;
 
 @SpringBootTest
+@Import(EmbeddedRedisConfig.class)
 class BidPessimisticLockTest extends DummyObject {
 	@Autowired
 	private BidRepository bidRepository;

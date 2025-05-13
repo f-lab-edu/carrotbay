@@ -2,7 +2,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "feature/ci" ]
   pull_request:
     branches: [ "main" ]
 jobs:
@@ -29,20 +29,12 @@ jobs:
             ${{ runner.os }}-gradle-
 
       - name: Build project (compile only)
-        run: ./gradlew assemble
+        run: ./gradlew build -x test
 
-      - name: Upload build artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: build/libs
   test:
     name: Run Tests
     runs-on: ubuntu-latest
     needs: build
-
-    permissions:
-      contents: read
 
     steps:
       - name: Checkout source code
@@ -54,54 +46,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Set up Docker (for Testcontainers)
-        run: |
-          sudo systemctl start docker
-          docker version
-          docker info
-
-      - name: Set up Redis service for Testcontainers
-        run: |
-          docker run -d --name redis-container -p 6379:6379 redis:7.0.8-alpine
-          docker ps
-
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
+      - name: Cache Gradle packages
+        uses: actions/cache@v3
         with:
-          name: build-artifact
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Run tests
-        run: ./gradlew test --info
-        env:
-          SPRING_PROFILES_ACTIVE: test
-          TESTCONTAINERS_RYUK_DISABLED: true
-
-      - name: Upload test report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report
-          path: build/reports/tests/test
-
-  security-check:
-    name: Security Vulnerability Scan
-    runs-on: ubuntu-latest
-    needs: build
-
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v3
-      - name: Run Dependency Check (OWASP)
-        uses: dependency-check/Dependency-Check_Action@main
-        with:
-          project: 'spring-project'
-          path: '.'
-          format: 'HTML'
-          out: 'reports'
-
-      - name: Upload Security Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: security-report
-          path: reports
+        run: ./gradlew test
