@@ -5,18 +5,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.carrotbay.config.EmbeddedRedisConfig;
 import com.carrotbay.domain.auction.dto.AuctionRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
+@Import(EmbeddedRedisConfig.class)
 class AuctionControllerTest {
 	@Autowired
 	private MockMvc mvc;

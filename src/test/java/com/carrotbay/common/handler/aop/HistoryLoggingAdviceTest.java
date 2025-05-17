@@ -14,6 +14,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -22,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.carrotbay.config.EmbeddedRedisConfig;
 import com.carrotbay.domain.auction.Auction;
 import com.carrotbay.domain.auction.AuctionService;
 import com.carrotbay.domain.auction.dto.AuctionRequestDto;
@@ -34,6 +36,7 @@ import com.carrotbay.dummy.DummyObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @SpringBootTest
+@Import(EmbeddedRedisConfig.class)
 @AutoConfigureMockMvc
 class HistoryLoggingAdviceTest extends DummyObject {
 

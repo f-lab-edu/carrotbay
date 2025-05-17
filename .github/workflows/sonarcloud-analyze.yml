@@ -2,7 +2,7 @@ name: F-Lab SonarCloud Code Analyze
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [ opened, synchronize, reopened ]
   workflow_dispatch:
 
 env:
@@ -23,6 +23,9 @@ jobs:
           ORG_NAME=$(echo $GITHUB_REPOSITORY | cut -d '/' -f 1)
           SONAR_PROJECT_KEY="${ORG_NAME}_${REPO_NAME}"
           echo "SONAR_PROJECT_KEY=$SONAR_PROJECT_KEY" >> $GITHUB_ENV 
+
+      - name: Build with Gradle
+        run: ./gradlew build -x test
 
       - name: Analyze with SonarCloud
         uses: SonarSource/sonarcloud-github-action@master

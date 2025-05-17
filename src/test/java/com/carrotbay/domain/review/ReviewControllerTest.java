@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
@@ -18,12 +19,14 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.carrotbay.config.EmbeddedRedisConfig;
 import com.carrotbay.domain.review.dto.ReviewRequestDto;
 import com.carrotbay.domain.review.dto.ReviewResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@Import(EmbeddedRedisConfig.class)
 public class ReviewControllerTest {
 	@Autowired
 	private MockMvc mvc;
