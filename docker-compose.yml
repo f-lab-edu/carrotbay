@@ -1,0 +1,19 @@
+services:
+  app:
+    image: leemanbokgoo/carrotbay:latest
+    container_name: spring-app
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - "6379:6379"
