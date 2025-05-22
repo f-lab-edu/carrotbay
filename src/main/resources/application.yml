@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: carrotbay
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/carrotbay
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+      dialect: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+    show-sql: true
+
+  session:
+    store-type: redis
+    redis:
+      namespace: carrotbay:session
+
+  data:
+    redis:
+      host: localhost
+      password: root
+      port: 6379

@@ -34,7 +34,7 @@ public class AuctionCustomRepositoryImpl implements AuctionCustomRepository {
 					auction.user.id,
 					auction.user.nickname))
 			.from(auction)
-			.leftJoin(auction.user).fetchJoin()
+			.leftJoin(auction.user)
 			.fetch();
 	}
 
